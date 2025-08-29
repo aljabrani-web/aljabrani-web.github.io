@@ -3,10 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - الصفحة غير موجودة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <meta name="description" content="صفحة خطأ 404 - الصفحة غير موجودة في موقع الجبرني ويب">
+    <meta name="keywords" content="404, خطأ, صفحة غير موجودة, الجبرني ويب">
+    <meta name="author" content="الجبرني ويب">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="404 - الصفحة غير موجودة | الجبرني ويب">
+    <meta property="og:description" content="عذراً، الصفحة التي تبحث عنها غير موجودة">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ar_SA">
+    
+    <title>404 - عذراً، الصفحة غير موجودة! | الجبرني ويب</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
     <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --text-dark: #2d3748;
+            --text-light: #4a5568;
+            --text-muted: #718096;
+            --bg-light: #f7fafc;
+            --bg-white: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --shadow-heavy: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -15,27 +49,75 @@
 
         body {
             font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 50%, var(--accent-color) 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
             direction: rtl;
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Background Animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            z-index: -1;
+            animation: backgroundMove 20s linear infinite;
+        }
+
+        @keyframes backgroundMove {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-10px) translateY(-10px); }
         }
 
         .error-container {
+            background: var(--bg-white);
+            border-radius: 24px;
+            box-shadow: var(--shadow-heavy);
+            padding: 3rem;
             text-align: center;
-            max-width: 600px;
-            padding: 2rem;
+            max-width: 700px;
+            width: 90%;
+            margin: 2rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .error-code {
+        .error-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .error-icon {
             font-size: 8rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            animation: bounce 2s infinite;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            animation: bounce 2s infinite, glow 3s ease-in-out infinite alternate;
+            position: relative;
         }
 
         @keyframes bounce {
@@ -43,70 +125,155 @@
                 transform: translateY(0);
             }
             40% {
-                transform: translateY(-20px);
+                transform: translateY(-15px);
             }
             60% {
-                transform: translateY(-10px);
+                transform: translateY(-8px);
             }
         }
 
-        .error-title {
+        @keyframes glow {
+            from {
+                filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.3));
+            }
+            to {
+                filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.6));
+            }
+        }
+
+        .error-number {
+            font-size: 6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
             font-size: 2.5rem;
+            color: var(--text-dark);
             margin-bottom: 1rem;
-            font-weight: 600;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .error-message {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            line-height: 1.6;
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .error-icon {
-            font-size: 4rem;
+        .reassurance {
+            background: linear-gradient(135deg, #e6fffa, #f0fff4);
+            border: 1px solid #81e6d9;
+            border-radius: var(--border-radius);
+            padding: 1rem;
             margin-bottom: 2rem;
-            opacity: 0.8;
+            color: #2d7d32;
+            font-weight: 500;
+        }
+
+        .reassurance i {
+            color: #4caf50;
+            margin-left: 0.5rem;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
         }
 
         .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
             font-weight: 600;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255,255,255,0.3);
-            margin: 0 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Cairo', sans-serif;
+            position: relative;
+            overflow: hidden;
+            min-width: 180px;
+            justify-content: center;
         }
 
-        .btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn-primary {
-            background: white;
-            color: #667eea;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            box-shadow: var(--shadow-medium);
         }
 
         .btn-primary:hover {
-            background: rgba(255,255,255,0.9);
-            color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-light);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
         }
 
         .suggestions {
-            margin-top: 3rem;
             text-align: right;
+            background: linear-gradient(135deg, var(--bg-light), #ffffff);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-top: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-light);
         }
 
         .suggestions h3 {
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .suggestions h3 i {
+            color: var(--primary-color);
         }
 
         .suggestions ul {
@@ -115,95 +282,416 @@
         }
 
         .suggestions li {
+            padding: 0.75rem 0;
+            color: var(--text-light);
+            position: relative;
+            padding-right: 2rem;
+            transition: var(--transition);
+            border-radius: 8px;
             margin-bottom: 0.5rem;
-            opacity: 0.9;
         }
 
-        .suggestions li:before {
-            content: "← ";
-            margin-left: 0.5rem;
+        .suggestions li:hover {
+            background: rgba(102, 126, 234, 0.05);
+            padding-right: 2.5rem;
+            color: var(--text-dark);
         }
 
-        @media (max-width: 768px) {
-            .error-code {
-                font-size: 5rem;
-            }
-            
-            .error-title {
-                font-size: 2rem;
-            }
-            
-            .error-message {
-                font-size: 1rem;
-            }
-            
-            .error-container {
-                padding: 1rem;
-            }
-            
-            .btn {
-                display: block;
-                margin: 10px 0;
-            }
+        .suggestions li::before {
+            content: "✓";
+            color: var(--primary-color);
+            font-weight: bold;
+            position: absolute;
+            right: 0.5rem;
+            top: 0.75rem;
+            width: 20px;
+            height: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, #fff5f5, #fffaf0);
+            border: 1px solid #fed7d7;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .contact-info h4 {
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .contact-info p {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-white);
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .contact-link:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
-    <div class="error-container">
-        <div class="error-icon">
-            <i class="fas fa-exclamation-triangle"></i>
+    <div class="error-container" role="main" aria-labelledby="error-title">
+        <div class="error-number" aria-hidden="true">404</div>
+        
+        <div class="error-icon" aria-hidden="true">
+            <i class="fas fa-compass"></i>
         </div>
         
-        <div class="error-code">404</div>
+        <h1 id="error-title">عذراً، الصفحة غير موجودة!</h1>
         
-        <h1 class="error-title">عذراً، الصفحة غير موجودة!</h1>
+        <div class="reassurance">
+            <i class="fas fa-heart" aria-hidden="true"></i>
+            لا تقلق، هذا أمر طبيعي ويحدث أحياناً!
+        </div>
         
         <p class="error-message">
-            يبدو أن الصفحة التي تبحث عنها قد تم نقلها أو حذفها أو أن الرابط غير صحيح.
-            لا تقلق، يمكنك العودة إلى الصفحة الرئيسية أو تصفح أقسام الموقع الأخرى.
+            يبدو أن الصفحة التي تبحث عنها قد تم نقلها أو حذفها، أو أن الرابط غير صحيح.
+            دعني أساعدك في العثور على ما تبحث عنه من خلال الخيارات المفيدة أدناه.
         </p>
         
-        <div class="error-actions">
-            <a href="/" class="btn btn-primary">
-                <i class="fas fa-home"></i>
+        <div class="buttons" role="navigation" aria-label="خيارات التنقل">
+            <a href="index.html" class="btn btn-primary" aria-label="العودة إلى الصفحة الرئيسية">
+                <i class="fas fa-home" aria-hidden="true"></i>
                 العودة للرئيسية
             </a>
-            <a href="javascript:history.back()" class="btn">
-                <i class="fas fa-arrow-right"></i>
+            <button onclick="goBack()" class="btn btn-secondary" aria-label="العودة إلى الصفحة السابقة">
+                <i class="fas fa-arrow-right" aria-hidden="true"></i>
                 الصفحة السابقة
-            </a>
+            </button>
         </div>
         
         <div class="suggestions">
-            <h3>اقتراحات مفيدة:</h3>
-            <ul>
-                <li>تأكد من كتابة الرابط بشكل صحيح</li>
-                <li>استخدم شريط البحث للعثور على ما تبحث عنه</li>
-                <li>تصفح الأقسام الرئيسية للموقع</li>
-                <li>تواصل معي إذا كنت تواجه مشكلة مستمرة</li>
+            <h3>
+                <i class="fas fa-lightbulb" aria-hidden="true"></i>
+                اقتراحات مفيدة:
+            </h3>
+            <ul role="list">
+                <li role="listitem">تأكد من كتابة الرابط (URL) بشكل صحيح</li>
+                <li role="listitem">استخدم شريط البحث للعثور على ما تبحث عنه</li>
+                <li role="listitem">تصفح الأقسام الرئيسية للموقع من القائمة</li>
+                <li role="listitem">جرب البحث عن المحتوى في صفحة المدونة</li>
+                <li role="listitem">تحقق من صحة الرابط إذا وصلت من موقع خارجي</li>
             </ul>
+        </div>
+        
+        <div class="contact-info">
+            <h4>هل تحتاج مساعدة إضافية؟</h4>
+            <p>إذا كنت تواجه مشاكل مستمرة أو تعتقد أن هناك خطأ في الموقع، لا تتردد في التواصل معي:</p>
+            <div class="contact-links">
+                <a href="mailto:contact@aljabrani-web.com" class="contact-link" aria-label="إرسال بريد إلكتروني">
+                    <i class="fas fa-envelope" aria-hidden="true"></i>
+                    البريد الإلكتروني
+                </a>
+                <a href="index.html#contact" class="contact-link" aria-label="صفحة التواصل">
+                    <i class="fas fa-phone" aria-hidden="true"></i>
+                    صفحة التواصل
+                </a>
+            </div>
         </div>
     </div>
 
     <script>
-        // Add some interactivity
-        document.addEventListener('DOMContentLoaded', function() {
-            // Animate elements on load
-            const elements = document.querySelectorAll('.error-icon, .error-code, .error-title, .error-message, .error-actions, .suggestions');
-            elements.forEach((el, index) => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                
-                setTimeout(() => {
-                    el.style.opacity = '1';
-                    el.style.transform = 'translateY(0)';
-                }, index * 200);
+        // Enhanced navigation function
+        function goBack() {
+            // Check if there's a previous page in history
+            if (window.history.length > 1 && document.referrer) {
+                window.history.back();
+            } else {
+                // Fallback to homepage if no history
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Enhanced error tracking
+        function trackError() {
+            // Google Analytics tracking (if available)
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'page_view', {
+                    page_title: '404 Error',
+                    page_location: window.location.href,
+                    custom_map: {
+                        'custom_parameter_1': 'error_page'
+                    }
+                });
+
+                gtag('event', '404_error', {
+                    'event_category': 'Error',
+                    'event_label': window.location.pathname,
+                    'value': 1
+                });
+            }
+
+            // Console logging for debugging
+            console.warn('404 Error:', {
+                url: window.location.href,
+                referrer: document.referrer,
+                userAgent: navigator.userAgent,
+                timestamp: new Date().toISOString()
             });
+        }
+
+        // Enhanced button interactions
+        function enhanceButtons() {
+            document.querySelectorAll('.btn').forEach(btn => {
+                // Mouse interactions
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px) scale(1.02)';
+                });
+
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+
+                // Touch interactions for mobile
+                btn.addEventListener('touchstart', function() {
+                    this.style.transform = 'translateY(-2px) scale(0.98)';
+                });
+
+                btn.addEventListener('touchend', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        }
+
+        // Accessibility improvements
+        function enhanceAccessibility() {
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.target.classList.contains('btn')) {
+                    e.target.click();
+                }
+
+                // ESC key to go back
+                if (e.key === 'Escape') {
+                    goBack();
+                }
+            });
+
+            // Focus management
+            const firstButton = document.querySelector('.btn');
+            if (firstButton) {
+                firstButton.focus();
+            }
+        }
+
+        // Auto-redirect suggestion (optional)
+        function suggestRedirect() {
+            const path = window.location.pathname;
+            const suggestions = {
+                '/about': 'index.html#about',
+                '/contact': 'index.html#contact',
+                '/portfolio': 'index.html#portfolio',
+                '/blog': 'blog.html',
+                '/admin': 'admin/login.html'
+            };
+
+            const suggestion = suggestions[path];
+            if (suggestion) {
+                const redirectDiv = document.createElement('div');
+                redirectDiv.className = 'redirect-suggestion';
+                redirectDiv.innerHTML = `
+                    <p style="background: #e3f2fd; padding: 1rem; border-radius: 8px; margin-top: 1rem; color: #1565c0;">
+                        <i class="fas fa-info-circle"></i>
+                        هل كنت تبحث عن: <a href="${suggestion}" style="color: #1565c0; font-weight: bold;">${suggestion}</a>؟
+                    </p>
+                `;
+                document.querySelector('.error-message').after(redirectDiv);
+            }
+        }
+
+        // Responsive design enhancements
+        function addResponsiveStyles() {
+            const style = document.createElement('style');
+            style.textContent = `
+                /* Responsive Design */
+                @media (max-width: 768px) {
+                    .error-container {
+                        padding: 2rem;
+                        margin: 1rem;
+                        border-radius: 16px;
+                    }
+
+                    .error-number {
+                        font-size: 4rem;
+                    }
+
+                    h1 {
+                        font-size: 1.8rem;
+                    }
+
+                    .error-message {
+                        font-size: 1.1rem;
+                    }
+
+                    .buttons {
+                        flex-direction: column;
+                        align-items: center;
+                    }
+
+                    .btn {
+                        width: 100%;
+                        max-width: 280px;
+                    }
+
+                    .suggestions {
+                        padding: 1.5rem;
+                        text-align: center;
+                    }
+
+                    .suggestions li {
+                        text-align: right;
+                    }
+
+                    .contact-links {
+                        flex-direction: column;
+                        align-items: center;
+                    }
+
+                    .contact-link {
+                        width: 100%;
+                        max-width: 200px;
+                        justify-content: center;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .error-container {
+                        padding: 1.5rem;
+                        margin: 0.5rem;
+                    }
+
+                    .error-icon {
+                        font-size: 6rem;
+                    }
+
+                    .error-number {
+                        font-size: 3rem;
+                    }
+
+                    h1 {
+                        font-size: 1.5rem;
+                    }
+
+                    .error-message {
+                        font-size: 1rem;
+                    }
+                }
+
+                /* Accessibility Improvements */
+                .btn:focus,
+                .contact-link:focus {
+                    outline: 3px solid var(--primary-color);
+                    outline-offset: 2px;
+                }
+
+                @media (prefers-reduced-motion: reduce) {
+                    .error-icon,
+                    .error-container::before,
+                    body::before {
+                        animation: none;
+                    }
+                }
+
+                /* Print Styles */
+                @media print {
+                    body {
+                        background: white;
+                        color: black;
+                    }
+
+                    .error-container {
+                        box-shadow: none;
+                        border: 1px solid #ccc;
+                    }
+
+                    .btn {
+                        border: 1px solid #ccc;
+                        background: white !important;
+                        color: black !important;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Initialize all enhancements
+        document.addEventListener('DOMContentLoaded', function() {
+            trackError();
+            enhanceButtons();
+            enhanceAccessibility();
+            suggestRedirect();
+            addResponsiveStyles();
+
+            // Add smooth scroll behavior
+            document.documentElement.style.scrollBehavior = 'smooth';
+
+            // Preload homepage for faster navigation
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = 'index.html';
+            document.head.appendChild(link);
+
+            // Add entrance animation
+            const container = document.querySelector('.error-container');
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(30px)';
+            container.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+
+            setTimeout(() => {
+                container.style.opacity = '1';
+                container.style.transform = 'translateY(0)';
+            }, 100);
         });
 
-        // Console message
-        console.log('404 - الصفحة غير موجودة. إذا كنت تواجه مشكلة، يرجى التواصل معي.');
+        // Service Worker registration (if available)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistration().then(registration => {
+                if (registration) {
+                    console.log('Service Worker is registered, checking for updates...');
+                }
+            });
+        }
+
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            if ('performance' in window) {
+                const loadTime = performance.now();
+                console.log(`404 page loaded in ${Math.round(loadTime)}ms`);
+            }
+        });
     </script>
 </body>
 </html>
