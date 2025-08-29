@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - لوحة التحكم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: rtl;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            margin: 20px;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .login-header i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .login-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .login-form {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            margin-top: 12px;
+        }
+
+        .form-group input[type="password"] {
+            padding-left: 45px;
+        }
+
+        .form-group input[type="text"] {
+            padding-left: 45px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            margin-top: 12px;
+            z-index: 10;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #f5c6cb;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #c3e6cb;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+            color: #667eea;
+            font-size: 1.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .security-info {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #666;
+            text-align: center;
+        }
+
+        .security-info i {
+            color: #28a745;
+            margin-left: 5px;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 10px;
+            }
+            
+            .login-form {
+                padding: 1.5rem;
+            }
+            
+            .login-header {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Animation for form appearance */
+        .login-container {
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <i class="fas fa-shield-alt"></i>
+            <h1>لوحة التحكم الإدارية</h1>
+            <p>تسجيل الدخول الآمن</p>
+        </div>
+        
+        <form class="login-form" id="loginForm">
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+            
+            <div class="form-group">
+                <label for="username">اسم المستخدم</label>
+                <input type="text" id="username" name="username" required autocomplete="username">
+                <i class="fas fa-user input-icon"></i>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+                <i class="fas fa-eye password-toggle" id="passwordToggle"></i>
+            </div>
+            
+            <button type="submit" class="login-btn" id="loginBtn">
+                <i class="fas fa-sign-in-alt"></i>
+                تسجيل الدخول
+            </button>
+            
+            <div class="loading" id="loading">
+                <i class="fas fa-spinner"></i>
+                <p>جاري التحقق...</p>
+            </div>
+            
+            <div class="forgot-password">
+                <a href="#" id="forgotPassword">نسيت كلمة المرور؟</a>
+            </div>
+            
+            <div class="security-info">
+                <i class="fas fa-lock"></i>
+                جلسة آمنة ومشفرة
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Security and Authentication System
+        class AdminAuth {
+            constructor() {
+                this.initializeAuth();
+                this.setupEventListeners();
+            }
+
+            initializeAuth() {
+                // Default admin credentials (في الإنتاج، يجب تغيير هذه البيانات)
+                this.defaultCredentials = {
+                    username: 'admin',
+                    password: this.hashPassword('admin123') // كلمة مرور افتراضية
+                };
+
+                // Check if custom credentials exist
+                const savedCredentials = localStorage.getItem('adminCredentials');
+                if (savedCredentials) {
+                    this.credentials = JSON.parse(savedCredentials);
+                } else {
+                    this.credentials = this.defaultCredentials;
+                    localStorage.setItem('adminCredentials', JSON.stringify(this.credentials));
+                }
+            }
+
+            setupEventListeners() {
+                const loginForm = document.getElementById('loginForm');
+                const passwordToggle = document.getElementById('passwordToggle');
+                const forgotPassword = document.getElementById('forgotPassword');
+
+                loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+                passwordToggle.addEventListener('click', () => this.togglePassword());
+                forgotPassword.addEventListener('click', (e) => this.handleForgotPassword(e));
+
+                // Check if already logged in
+                if (this.isLoggedIn()) {
+                    this.redirectToDashboard();
+                }
+            }
+
+            async handleLogin(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const loginBtn = document.getElementById('loginBtn');
+                const loading = document.getElementById('loading');
+
+                // Show loading
+                loginBtn.disabled = true;
+                loading.style.display = 'block';
+
+                // Simulate network delay for security
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                if (this.validateCredentials(username, password)) {
+                    this.showMessage('تم تسجيل الدخول بنجاح!', 'success');
+                    
+                    // Set session
+                    const sessionData = {
+                        username: username,
+                        loginTime: Date.now(),
+                        sessionId: this.generateSessionId()
+                    };
+                    
+                    localStorage.setItem('adminSession', JSON.stringify(sessionData));
+                    
+                    // Redirect after short delay
+                    setTimeout(() => {
+                        this.redirectToDashboard();
+                    }, 1000);
+                } else {
+                    this.showMessage('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
+                    
+                    // Security: Add failed attempt
+                    this.addFailedAttempt();
+                }
+
+                // Hide loading
+                loginBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+
+            validateCredentials(username, password) {
+                const hashedPassword = this.hashPassword(password);
+                return username === this.credentials.username && 
+                       hashedPassword === this.credentials.password;
+            }
+
+            hashPassword(password) {
+                // Simple hash function (في الإنتاج، استخدم bcrypt أو مكتبة تشفير قوية)
+                let hash = 0;
+                for (let i = 0; i < password.length; i++) {
+                    const char = password.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash; // Convert to 32-bit integer
+                }
+                return hash.toString();
+            }
+
+            generateSessionId() {
+                return Math.random().toString(36).substring(2, 15) + 
+                       Math.random().toString(36).substring(2, 15);
+            }
+
+            isLoggedIn() {
+                const session = localStorage.getItem('adminSession');
+                if (!session) return false;
+
+                const sessionData = JSON.parse(session);
+                const currentTime = Date.now();
+                const sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
+
+                // Check if session is still valid
+                if (currentTime - sessionData.loginTime > sessionDuration) {
+                    localStorage.removeItem('adminSession');
+                    return false;
+                }
+
+                return true;
+            }
+
+            addFailedAttempt() {
+                const attempts = JSON.parse(localStorage.getItem('failedAttempts') || '[]');
+                attempts.push(Date.now());
+                
+                // Keep only last 10 attempts
+                if (attempts.length > 10) {
+                    attempts.shift();
+                }
+                
+                localStorage.setItem('failedAttempts', JSON.stringify(attempts));
+
+                // Check for too many failed attempts
+                const recentAttempts = attempts.filter(time => 
+                    Date.now() - time < 15 * 60 * 1000 // Last 15 minutes
+                );
+
+                if (recentAttempts.length >= 5) {
+                    this.showMessage('تم تجاوز عدد المحاولات المسموح. حاول مرة أخرى بعد 15 دقيقة.', 'error');
+                    document.getElementById('loginBtn').disabled = true;
+                    
+                    setTimeout(() => {
+                        document.getElementById('loginBtn').disabled = false;
+                    }, 15 * 60 * 1000);
+                }
+            }
+
+            togglePassword() {
+                const passwordInput = document.getElementById('password');
+                const passwordToggle = document.getElementById('passwordToggle');
+
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    passwordToggle.className = 'fas fa-eye-slash password-toggle';
+                } else {
+                    passwordInput.type = 'password';
+                    passwordToggle.className = 'fas fa-eye password-toggle';
+                }
+            }
+
+            handleForgotPassword(e) {
+                e.preventDefault();
+                
+                const newPassword = prompt('أدخل كلمة المرور الجديدة:');
+                if (newPassword && newPassword.length >= 6) {
+                    this.credentials.password = this.hashPassword(newPassword);
+                    localStorage.setItem('adminCredentials', JSON.stringify(this.credentials));
+                    this.showMessage('تم تغيير كلمة المرور بنجاح!', 'success');
+                } else if (newPassword) {
+                    this.showMessage('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+                }
+            }
+
+            showMessage(message, type) {
+                const errorDiv = document.getElementById('errorMessage');
+                const successDiv = document.getElementById('successMessage');
+
+                // Hide both messages first
+                errorDiv.style.display = 'none';
+                successDiv.style.display = 'none';
+
+                if (type === 'error') {
+                    errorDiv.textContent = message;
+                    errorDiv.style.display = 'block';
+                } else {
+                    successDiv.textContent = message;
+                    successDiv.style.display = 'block';
+                }
+
+                // Auto hide after 5 seconds
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                    successDiv.style.display = 'none';
+                }, 5000);
+            }
+
+            redirectToDashboard() {
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        // Initialize authentication system
+        document.addEventListener('DOMContentLoaded', () => {
+            new AdminAuth();
+        });
+
+        // Security measures
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                e.preventDefault();
+            }
+        });
+
+        // Console warning
+        console.log('%cتحذير أمني!', 'color: red; font-size: 20px; font-weight: bold;');
+        console.log('%cهذه منطقة مخصصة للمطورين. إذا لم تكن مطوراً، فقد تكون عرضة للاختراق.', 'color: red; font-size: 14px;');
+    </script>
+</body>
+</html>

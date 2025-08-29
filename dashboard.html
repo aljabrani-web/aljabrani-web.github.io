@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم الإدارية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-cog"></i>
+                <span>لوحة التحكم</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item active">
+                    <a href="#dashboard" class="nav-link" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>الرئيسية</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#personal-info" class="nav-link" data-section="personal-info">
+                        <i class="fas fa-user"></i>
+                        <span>المعلومات الشخصية</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#skills" class="nav-link" data-section="skills">
+                        <i class="fas fa-code"></i>
+                        <span>المهارات التقنية</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#portfolio" class="nav-link" data-section="portfolio">
+                        <i class="fas fa-briefcase"></i>
+                        <span>معرض الأعمال</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#blog" class="nav-link" data-section="blog">
+                        <i class="fas fa-blog"></i>
+                        <span>المدونة</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#settings" class="nav-link" data-section="settings">
+                        <i class="fas fa-cogs"></i>
+                        <span>الإعدادات</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-details">
+                    <span class="username" id="currentUser">المدير</span>
+                    <span class="user-role">مدير الموقع</span>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>تسجيل الخروج</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title" id="pageTitle">لوحة التحكم الرئيسية</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-actions">
+                    <button class="action-btn" id="saveAllBtn" title="حفظ جميع التغييرات">
+                        <i class="fas fa-save"></i>
+                    </button>
+                    <button class="action-btn" id="previewBtn" title="معاينة الموقع">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="action-btn" id="refreshBtn" title="تحديث البيانات">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="user-menu">
+                    <button class="user-menu-toggle" id="userMenuToggle">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="headerUsername">المدير</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-user"></i>
+                            الملف الشخصي
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            الإعدادات
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" id="logoutLink">
+                            <i class="fas fa-sign-out-alt"></i>
+                            تسجيل الخروج
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content-area" id="contentArea">
+            <!-- Dashboard Section -->
+            <section class="content-section active" id="dashboard-section">
+                <div class="dashboard-grid">
+                    <div class="stats-card">
+                        <div class="stats-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div class="stats-info">
+                            <h3 id="projectsCount">0</h3>
+                            <p>المشاريع</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-card">
+                        <div class="stats-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="stats-info">
+                            <h3 id="skillsCount">0</h3>
+                            <p>المهارات</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-card">
+                        <div class="stats-icon">
+                            <i class="fas fa-blog"></i>
+                        </div>
+                        <div class="stats-info">
+                            <h3 id="articlesCount">0</h3>
+                            <p>المقالات</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-card">
+                        <div class="stats-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="stats-info">
+                            <h3 id="viewsCount">0</h3>
+                            <p>المشاهدات</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-widgets">
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3>آخر التحديثات</h3>
+                            <button class="widget-action">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                        <div class="widget-content">
+                            <div class="activity-list" id="recentActivity">
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-plus"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p>تم إنشاء لوحة التحكم</p>
+                                        <span class="activity-time">الآن</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3>الإجراءات السريعة</h3>
+                        </div>
+                        <div class="widget-content">
+                            <div class="quick-actions">
+                                <button class="quick-action-btn" data-section="personal-info">
+                                    <i class="fas fa-user"></i>
+                                    <span>تحديث المعلومات</span>
+                                </button>
+                                <button class="quick-action-btn" data-section="portfolio">
+                                    <i class="fas fa-plus"></i>
+                                    <span>إضافة مشروع</span>
+                                </button>
+                                <button class="quick-action-btn" data-section="blog">
+                                    <i class="fas fa-edit"></i>
+                                    <span>كتابة مقال</span>
+                                </button>
+                                <button class="quick-action-btn" id="backupBtn">
+                                    <i class="fas fa-download"></i>
+                                    <span>نسخ احتياطي</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Personal Info Section -->
+            <section class="content-section" id="personal-info-section">
+                <div class="section-header">
+                    <h2>المعلومات الشخصية</h2>
+                    <p>تحديث معلوماتك الشخصية والمهنية</p>
+                </div>
+                <div class="form-container">
+                    <!-- سيتم إضافة نماذج المعلومات الشخصية هنا -->
+                    <p>جاري تحميل نماذج المعلومات الشخصية...</p>
+                </div>
+            </section>
+
+            <!-- Skills Section -->
+            <section class="content-section" id="skills-section">
+                <div class="section-header">
+                    <h2>إدارة المهارات التقنية</h2>
+                    <p>إضافة وتعديل مهاراتك التقنية</p>
+                </div>
+                <div class="form-container">
+                    <!-- سيتم إضافة نماذج المهارات هنا -->
+                    <p>جاري تحميل نماذج المهارات...</p>
+                </div>
+            </section>
+
+            <!-- Portfolio Section -->
+            <section class="content-section" id="portfolio-section">
+                <div class="section-header">
+                    <h2>إدارة معرض الأعمال</h2>
+                    <p>إضافة وتعديل مشاريعك</p>
+                </div>
+                <div class="form-container">
+                    <!-- سيتم إضافة نماذج المشاريع هنا -->
+                    <p>جاري تحميل نماذج المشاريع...</p>
+                </div>
+            </section>
+
+            <!-- Blog Section -->
+            <section class="content-section" id="blog-section">
+                <div class="section-header">
+                    <h2>إدارة المدونة</h2>
+                    <p>كتابة وتعديل المقالات</p>
+                </div>
+                <div class="form-container">
+                    <!-- سيتم إضافة محرر المقالات هنا -->
+                    <p>جاري تحميل محرر المقالات...</p>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="content-section" id="settings-section">
+                <div class="section-header">
+                    <h2>الإعدادات العامة</h2>
+                    <p>إعدادات الموقع والأمان</p>
+                </div>
+                <div class="form-container">
+                    <!-- سيتم إضافة نماذج الإعدادات هنا -->
+                    <p>جاري تحميل الإعدادات...</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>جاري التحميل...</p>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <!-- Scripts -->
+    <script src="admin-core.js"></script>
+    <script src="website-updater.js"></script>
+    <script src="live-updater.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="deployment-test.js"></script>
+
+    <!-- Advanced Diagnostic Integration -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // إضافة زر التشخيص المتقدم في لوحة التحكم
+            const diagnosticBtn = document.createElement('button');
+            diagnosticBtn.innerHTML = '🔍 تشخيص متقدم';
+            diagnosticBtn.className = 'btn btn-warning';
+            diagnosticBtn.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                left: 20px;
+                padding: 0.75rem 1rem;
+                background: linear-gradient(135deg, #e74c3c, #c0392b);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-family: 'Cairo', sans-serif;
+                font-weight: bold;
+                box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+                z-index: 1000;
+                transition: all 0.3s ease;
+            `;
+
+            diagnosticBtn.addEventListener('click', function() {
+                window.open('../advanced-diagnostic-tool.html', '_blank');
+            });
+
+            document.body.appendChild(diagnosticBtn);
+        });
+    </script>
+</body>
+</html>
