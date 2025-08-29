@@ -488,7 +488,64 @@
 
         // Initialize authentication system
         document.addEventListener('DOMContentLoaded', () => {
-            new AdminAuth();
+            const auth = new AdminAuth();
+
+            // إضافة اختبار تلقائي للنموذج
+            console.log('🔧 نظام تسجيل الدخول جاهز');
+            console.log('📋 بيانات الدخول الافتراضية: admin / admin123');
+
+            // تحسين تجربة المستخدم
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+
+            // إضافة placeholder
+            usernameInput.placeholder = 'أدخل اسم المستخدم';
+            passwordInput.placeholder = 'أدخل كلمة المرور';
+
+            // تحسين التنقل بالكيبورد
+            usernameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    passwordInput.focus();
+                }
+            });
+
+            passwordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+                }
+            });
+
+            // إضافة تلميح للمستخدم الجديد
+            if (!localStorage.getItem('hasVisited')) {
+                setTimeout(() => {
+                    const welcomeMsg = document.createElement('div');
+                    welcomeMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: #007bff;
+                        color: white;
+                        padding: 1rem;
+                        border-radius: 8px;
+                        box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+                        z-index: 10000;
+                        max-width: 300px;
+                        font-size: 14px;
+                    `;
+                    welcomeMsg.innerHTML = `
+                        <strong>مرحباً!</strong><br>
+                        استخدم: admin / admin123<br>
+                        <small>غيّر كلمة المرور بعد الدخول</small>
+                    `;
+                    document.body.appendChild(welcomeMsg);
+
+                    setTimeout(() => {
+                        welcomeMsg.remove();
+                    }, 5000);
+
+                    localStorage.setItem('hasVisited', 'true');
+                }, 1000);
+            }
         });
 
         // Security measures

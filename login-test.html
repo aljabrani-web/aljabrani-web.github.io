@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تسجيل الدخول - لوحة التحكم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+            direction: rtl;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .test-header {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .test-content {
+            padding: 2rem;
+        }
+        .test-section {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .test-result {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            border-right: 4px solid #6c757d;
+        }
+        .test-result.success {
+            background: #d4edda;
+            border-right-color: #28a745;
+        }
+        .test-result.error {
+            background: #f8d7da;
+            border-right-color: #dc3545;
+        }
+        .test-result.warning {
+            background: #fff3cd;
+            border-right-color: #ffc107;
+        }
+        .test-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+        .test-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        .credentials-box {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🧪 اختبار نظام تسجيل الدخول</h1>
+            <p>فحص شامل لنموذج تسجيل الدخول ونظام المصادقة</p>
+        </div>
+        
+        <div class="test-content">
+            <div class="credentials-box">
+                <h3>🔑 بيانات الدخول الافتراضية:</h3>
+                <p><strong>اسم المستخدم:</strong> admin</p>
+                <p><strong>كلمة المرور:</strong> admin123</p>
+            </div>
+            
+            <div class="test-section">
+                <h3>🔍 اختبارات النموذج</h3>
+                <button class="test-btn" onclick="testLoginForm()">اختبار نموذج تسجيل الدخول</button>
+                <button class="test-btn" onclick="testAuthSystem()">اختبار نظام المصادقة</button>
+                <button class="test-btn" onclick="testCredentials()">اختبار بيانات الدخول</button>
+                <button class="test-btn" onclick="testSession()">اختبار إدارة الجلسات</button>
+                
+                <div id="test-results">
+                    <!-- سيتم ملؤها ديناميكياً -->
+                </div>
+            </div>
+            
+            <div class="test-section">
+                <h3>🔗 روابط سريعة</h3>
+                <button class="test-btn" onclick="openLogin()">فتح صفحة تسجيل الدخول</button>
+                <button class="test-btn" onclick="openDashboard()">فتح لوحة التحكم</button>
+                <button class="test-btn" onclick="clearSession()">مسح الجلسة</button>
+            </div>
+            
+            <div class="test-section">
+                <h3>📊 معلومات النظام</h3>
+                <div id="system-info">
+                    <div class="code-block" id="system-details">جاري تحميل معلومات النظام...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // نظام اختبار تسجيل الدخول
+        class LoginTester {
+            constructor() {
+                this.baseUrl = window.location.origin;
+                this.init();
+            }
+            
+            init() {
+                this.loadSystemInfo();
+            }
+            
+            async testLoginForm() {
+                this.addTestResult('بدء اختبار نموذج تسجيل الدخول...', 'warning');
+                
+                try {
+                    // فحص وجود صفحة تسجيل الدخول
+                    const response = await fetch('./login.html');
+                    if (!response.ok) {
+                        this.addTestResult('❌ صفحة تسجيل الدخول غير موجودة', 'error');
+                        return;
+                    }
+                    
+                    const html = await response.text();
+                    
+                    // فحص العناصر المطلوبة
+                    const checks = [
+                        { name: 'نموذج تسجيل الدخول', test: html.includes('<form') && html.includes('id="loginForm"') },
+                        { name: 'حقل اسم المستخدم', test: html.includes('id="username"') },
+                        { name: 'حقل كلمة المرور', test: html.includes('id="password"') },
+                        { name: 'زر تسجيل الدخول', test: html.includes('type="submit"') },
+                        { name: 'نظام المصادقة', test: html.includes('AdminAuth') },
+                        { name: 'التحقق من البيانات', test: html.includes('validateCredentials') },
+                        { name: 'إدارة الجلسات', test: html.includes('adminSession') }
+                    ];
+                    
+                    let passedTests = 0;
+                    checks.forEach(check => {
+                        if (check.test) {
+                            this.addTestResult(`✅ ${check.name}: موجود`, 'success');
+                            passedTests++;
+                        } else {
+                            this.addTestResult(`❌ ${check.name}: مفقود`, 'error');
+                        }
+                    });
+                    
+                    const score = Math.round((passedTests / checks.length) * 100);
+                    this.addTestResult(`📊 نتيجة الاختبار: ${score}% (${passedTests}/${checks.length})`, 
+                        score >= 80 ? 'success' : score >= 60 ? 'warning' : 'error');
+                    
+                } catch (error) {
+                    this.addTestResult(`❌ خطأ في الاختبار: ${error.message}`, 'error');
+                }
+            }
+            
+            testAuthSystem() {
+                this.addTestResult('بدء اختبار نظام المصادقة...', 'warning');
+                
+                try {
+                    // محاكاة نظام المصادقة
+                    const testCredentials = {
+                        username: 'admin',
+                        password: 'admin123'
+                    };
+                    
+                    // فحص localStorage
+                    const hasLocalStorage = typeof(Storage) !== "undefined";
+                    this.addTestResult(hasLocalStorage ? '✅ LocalStorage متاح' : '❌ LocalStorage غير متاح', 
+                        hasLocalStorage ? 'success' : 'error');
+                    
+                    // فحص بيانات الاعتماد المحفوظة
+                    const savedCredentials = localStorage.getItem('adminCredentials');
+                    if (savedCredentials) {
+                        this.addTestResult('✅ بيانات الاعتماد محفوظة', 'success');
+                        
+                        try {
+                            const credentials = JSON.parse(savedCredentials);
+                            this.addTestResult(`✅ اسم المستخدم: ${credentials.username}`, 'success');
+                        } catch (e) {
+                            this.addTestResult('❌ خطأ في تحليل بيانات الاعتماد', 'error');
+                        }
+                    } else {
+                        this.addTestResult('⚠️ لم يتم العثور على بيانات اعتماد محفوظة', 'warning');
+                    }
+                    
+                    // فحص الجلسة الحالية
+                    const currentSession = localStorage.getItem('adminSession');
+                    if (currentSession) {
+                        try {
+                            const session = JSON.parse(currentSession);
+                            const sessionAge = Date.now() - session.loginTime;
+                            const sessionHours = Math.round(sessionAge / (1000 * 60 * 60));
+                            
+                            this.addTestResult(`✅ جلسة نشطة منذ ${sessionHours} ساعة`, 'success');
+                        } catch (e) {
+                            this.addTestResult('❌ خطأ في تحليل بيانات الجلسة', 'error');
+                        }
+                    } else {
+                        this.addTestResult('ℹ️ لا توجد جلسة نشطة', 'warning');
+                    }
+                    
+                } catch (error) {
+                    this.addTestResult(`❌ خطأ في اختبار المصادقة: ${error.message}`, 'error');
+                }
+            }
+            
+            testCredentials() {
+                this.addTestResult('بدء اختبار بيانات الدخول...', 'warning');
+                
+                // محاكاة تشفير كلمة المرور (نفس الطريقة المستخدمة في النظام)
+                function hashPassword(password) {
+                    let hash = 0;
+                    for (let i = 0; i < password.length; i++) {
+                        const char = password.charCodeAt(i);
+                        hash = ((hash << 5) - hash) + char;
+                        hash = hash & hash;
+                    }
+                    return hash.toString();
+                }
+                
+                const defaultPassword = 'admin123';
+                const hashedPassword = hashPassword(defaultPassword);
+                
+                this.addTestResult(`✅ كلمة المرور الافتراضية: ${defaultPassword}`, 'success');
+                this.addTestResult(`✅ كلمة المرور مشفرة: ${hashedPassword}`, 'success');
+                
+                // فحص قوة كلمة المرور
+                const passwordStrength = this.checkPasswordStrength(defaultPassword);
+                this.addTestResult(`📊 قوة كلمة المرور: ${passwordStrength.score}/5`, 
+                    passwordStrength.score >= 3 ? 'success' : 'warning');
+                
+                passwordStrength.suggestions.forEach(suggestion => {
+                    this.addTestResult(`💡 اقتراح: ${suggestion}`, 'warning');
+                });
+            }
+            
+            testSession() {
+                this.addTestResult('بدء اختبار إدارة الجلسات...', 'warning');
+                
+                // إنشاء جلسة تجريبية
+                const testSession = {
+                    username: 'admin',
+                    loginTime: Date.now(),
+                    sessionId: Math.random().toString(36).substring(2, 15)
+                };
+                
+                try {
+                    // حفظ الجلسة
+                    localStorage.setItem('testSession', JSON.stringify(testSession));
+                    this.addTestResult('✅ تم إنشاء جلسة تجريبية', 'success');
+                    
+                    // قراءة الجلسة
+                    const retrievedSession = localStorage.getItem('testSession');
+                    if (retrievedSession) {
+                        const session = JSON.parse(retrievedSession);
+                        this.addTestResult(`✅ تم استرداد الجلسة: ${session.sessionId}`, 'success');
+                    }
+                    
+                    // حذف الجلسة التجريبية
+                    localStorage.removeItem('testSession');
+                    this.addTestResult('✅ تم حذف الجلسة التجريبية', 'success');
+                    
+                } catch (error) {
+                    this.addTestResult(`❌ خطأ في اختبار الجلسة: ${error.message}`, 'error');
+                }
+            }
+            
+            checkPasswordStrength(password) {
+                let score = 0;
+                const suggestions = [];
+                
+                if (password.length >= 8) score++;
+                else suggestions.push('استخدم 8 أحرف على الأقل');
+                
+                if (/[a-z]/.test(password)) score++;
+                else suggestions.push('أضف أحرف صغيرة');
+                
+                if (/[A-Z]/.test(password)) score++;
+                else suggestions.push('أضف أحرف كبيرة');
+                
+                if (/[0-9]/.test(password)) score++;
+                else suggestions.push('أضف أرقام');
+                
+                if (/[^A-Za-z0-9]/.test(password)) score++;
+                else suggestions.push('أضف رموز خاصة');
+                
+                return { score, suggestions };
+            }
+            
+            loadSystemInfo() {
+                const systemInfo = {
+                    userAgent: navigator.userAgent,
+                    language: navigator.language,
+                    platform: navigator.platform,
+                    cookieEnabled: navigator.cookieEnabled,
+                    onLine: navigator.onLine,
+                    localStorage: typeof(Storage) !== "undefined",
+                    sessionStorage: typeof(sessionStorage) !== "undefined",
+                    currentTime: new Date().toLocaleString('ar-SA'),
+                    url: window.location.href
+                };
+                
+                let infoText = 'معلومات النظام:\n\n';
+                Object.entries(systemInfo).forEach(([key, value]) => {
+                    infoText += `${key}: ${value}\n`;
+                });
+                
+                document.getElementById('system-details').textContent = infoText;
+            }
+            
+            addTestResult(message, type) {
+                const resultsContainer = document.getElementById('test-results');
+                const resultElement = document.createElement('div');
+                resultElement.className = `test-result ${type}`;
+                
+                const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️';
+                
+                resultElement.innerHTML = `
+                    <span class="test-icon">${icon}</span>
+                    <div>
+                        <strong>${message}</strong>
+                        <div style="font-size: 0.9rem; color: #666; margin-top: 0.25rem;">
+                            ${new Date().toLocaleTimeString('ar-SA')}
+                        </div>
+                    </div>
+                `;
+                
+                resultsContainer.appendChild(resultElement);
+                
+                // التمرير للأسفل
+                resultElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        // الوظائف العامة
+        function testLoginForm() {
+            window.loginTester.testLoginForm();
+        }
+        
+        function testAuthSystem() {
+            window.loginTester.testAuthSystem();
+        }
+        
+        function testCredentials() {
+            window.loginTester.testCredentials();
+        }
+        
+        function testSession() {
+            window.loginTester.testSession();
+        }
+        
+        function openLogin() {
+            window.open('./login.html', '_blank');
+        }
+        
+        function openDashboard() {
+            window.open('./dashboard.html', '_blank');
+        }
+        
+        function clearSession() {
+            localStorage.removeItem('adminSession');
+            localStorage.removeItem('adminCredentials');
+            alert('تم مسح جميع بيانات الجلسة');
+        }
+        
+        // تشغيل النظام
+        document.addEventListener('DOMContentLoaded', function() {
+            window.loginTester = new LoginTester();
+        });
+    </script>
+</body>
+</html>
