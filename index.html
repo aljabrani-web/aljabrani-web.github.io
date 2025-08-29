@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="موقع شخصي لمطور ويب محترف - عرض الأعمال والمهارات">
+    <meta name="keywords" content="مطور ويب, تطوير مواقع, HTML, CSS, JavaScript, برمجة">
+    <meta name="author" content="اسمك هنا">
+    <title>اسمك - مطور ويب محترف</title>
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="اسمك - مطور ويب محترف">
+    <meta property="og:description" content="موقع شخصي لمطور ويب محترف - عرض الأعمال والمهارات">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourwebsite.com">
+    <meta property="og:image" content="https://yourwebsite.com/og-image.jpg">
+    <meta property="og:locale" content="ar_SA">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="اسمك - مطور ويب محترف">
+    <meta name="twitter:description" content="موقع شخصي لمطور ويب محترف - عرض الأعمال والمهارات">
+    <meta name="twitter:image" content="https://yourwebsite.com/og-image.jpg">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="اسمك">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "اسمك",
+        "jobTitle": "مطور ويب محترف",
+        "description": "مطور ويب محترف متخصص في إنشاء مواقع ويب حديثة ومتجاوبة",
+        "url": "https://yourwebsite.com",
+        "sameAs": [
+            "https://linkedin.com/in/yourprofile",
+            "https://github.com/yourusername",
+            "https://twitter.com/yourusername"
+        ],
+        "knowsAbout": [
+            "HTML5",
+            "CSS3",
+            "JavaScript",
+            "React",
+            "Node.js",
+            "تطوير الويب",
+            "تصميم واجهات المستخدم"
+        ],
+        "worksFor": {
+            "@type": "Organization",
+            "name": "مطور مستقل"
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+966-50-123-4567",
+            "contactType": "customer service",
+            "email": "your.email@example.com"
+        },
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "الرياض",
+            "addressCountry": "SA"
+        }
+    }
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="#home">اسمك</a>
+            </div>
+            <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item">
+                    <a href="#home" class="nav-link">الرئيسية</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#about" class="nav-link">نبذة عني</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#skills" class="nav-link">مهاراتي</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#portfolio" class="nav-link">أعمالي</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#contact" class="nav-link">تواصل معي</a>
+                </li>
+            </ul>
+            <div class="nav-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">مرحباً، أنا <span class="highlight">اسمك</span></h1>
+                <h2 class="hero-subtitle">مطور ويب محترف</h2>
+                <p class="hero-description">
+                    أقوم بتطوير مواقع ويب حديثة ومتجاوبة باستخدام أحدث التقنيات
+                    لتحويل أفكارك إلى واقع رقمي مذهل
+                </p>
+                <div class="hero-buttons">
+                    <a href="#portfolio" class="btn btn-primary">شاهد أعمالي</a>
+                    <a href="#contact" class="btn btn-secondary">تواصل معي</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="hero-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <a href="#about">
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">نبذة عني</h2>
+                <p class="section-subtitle">تعرف على خبراتي ومهاراتي</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>مطور ويب شغوف بالتكنولوجيا</h3>
+                    <p>
+                        أنا مطور ويب محترف مع خبرة واسعة في تطوير المواقع والتطبيقات الحديثة.
+                        أتخصص في إنشاء تجارب مستخدم استثنائية باستخدام أحدث التقنيات والأدوات.
+                    </p>
+                    <p>
+                        أؤمن بأن التصميم الجيد والكود النظيف هما أساس أي مشروع ناجح.
+                        أسعى دائماً لتعلم التقنيات الجديدة ومواكبة التطورات في عالم تطوير الويب.
+                    </p>
+                    <div class="about-stats">
+                        <div class="stat">
+                            <h4>50+</h4>
+                            <p>مشروع مكتمل</p>
+                        </div>
+                        <div class="stat">
+                            <h4>3+</h4>
+                            <p>سنوات خبرة</p>
+                        </div>
+                        <div class="stat">
+                            <h4>100%</h4>
+                            <p>رضا العملاء</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <div class="about-avatar">
+                        <i class="fas fa-code"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">مهاراتي التقنية</h2>
+                <p class="section-subtitle">التقنيات والأدوات التي أتقنها</p>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-html5"></i>
+                    </div>
+                    <h3>HTML5</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="95%"></div>
+                    </div>
+                    <span class="skill-percentage">95%</span>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-css3-alt"></i>
+                    </div>
+                    <h3>CSS3</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="90%"></div>
+                    </div>
+                    <span class="skill-percentage">90%</span>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-js-square"></i>
+                    </div>
+                    <h3>JavaScript</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="85%"></div>
+                    </div>
+                    <span class="skill-percentage">85%</span>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-react"></i>
+                    </div>
+                    <h3>React</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="80%"></div>
+                    </div>
+                    <span class="skill-percentage">80%</span>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fab fa-node-js"></i>
+                    </div>
+                    <h3>Node.js</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="75%"></div>
+                    </div>
+                    <span class="skill-percentage">75%</span>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>قواعد البيانات</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="70%"></div>
+                    </div>
+                    <span class="skill-percentage">70%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">معرض أعمالي</h2>
+                <p class="section-subtitle">مجموعة من أفضل مشاريعي</p>
+            </div>
+            <div class="portfolio-filter">
+                <button class="filter-btn active" data-filter="all">الكل</button>
+                <button class="filter-btn" data-filter="web">مواقع ويب</button>
+                <button class="filter-btn" data-filter="app">تطبيقات</button>
+                <button class="filter-btn" data-filter="design">تصميم</button>
+            </div>
+            <div class="portfolio-grid">
+                <div class="portfolio-item" data-category="web">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3>موقع تجاري</h3>
+                        <p>موقع ويب متكامل لشركة تجارية مع نظام إدارة المحتوى</p>
+                        <div class="portfolio-tech">
+                            <span>HTML</span>
+                            <span>CSS</span>
+                            <span>JavaScript</span>
+                        </div>
+                        <div class="portfolio-links">
+                            <a href="#" class="portfolio-link">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            <a href="#" class="portfolio-link">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-category="app">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3>تطبيق إدارة المهام</h3>
+                        <p>تطبيق ويب لإدارة المهام والمشاريع مع واجهة مستخدم حديثة</p>
+                        <div class="portfolio-tech">
+                            <span>React</span>
+                            <span>Node.js</span>
+                            <span>MongoDB</span>
+                        </div>
+                        <div class="portfolio-links">
+                            <a href="#" class="portfolio-link">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            <a href="#" class="portfolio-link">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-category="design">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3>تصميم واجهة مستخدم</h3>
+                        <p>تصميم واجهة مستخدم حديثة ومتجاوبة لتطبيق جوال</p>
+                        <div class="portfolio-tech">
+                            <span>Figma</span>
+                            <span>Adobe XD</span>
+                            <span>CSS</span>
+                        </div>
+                        <div class="portfolio-links">
+                            <a href="#" class="portfolio-link">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            <a href="#" class="portfolio-link">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">تواصل معي</h2>
+                <p class="section-subtitle">دعنا نعمل معاً على مشروعك القادم</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>معلومات التواصل</h3>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>البريد الإلكتروني</h4>
+                            <p>your.email@example.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>رقم الهاتف</h4>
+                            <p>+966 50 123 4567</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>الموقع</h4>
+                            <p>الرياض، المملكة العربية السعودية</p>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" placeholder="اسمك الكامل" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" placeholder="بريدك الإلكتروني" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="subject" name="subject" placeholder="موضوع الرسالة" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" name="message" placeholder="رسالتك" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">إرسال الرسالة</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2024 اسمك. جميع الحقوق محفوظة.</p>
+                <p>تم التطوير بـ <i class="fas fa-heart"></i> باستخدام HTML, CSS & JavaScript</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+
+    <!-- Auto Updater (يحدث الموقع تلقائياً من لوحة التحكم) -->
+    <script src="auto-updater.js"></script>
+
+    <!-- SEO Optimization (تحسين محركات البحث) -->
+    <script src="seo-optimization.js"></script>
+
+    <!-- Deployment Preparation (تحضير النشر) -->
+    <script src="prepare-deployment.js"></script>
+
+    <!-- Advanced Diagnostic Tool (أداة التشخيص المتقدمة) -->
+    <script>
+        // إضافة زر أداة التشخيص المتقدمة
+        document.addEventListener('DOMContentLoaded', function() {
+            const diagnosticBtn = document.createElement('button');
+            diagnosticBtn.innerHTML = '🔍 تشخيص متقدم';
+            diagnosticBtn.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: linear-gradient(135deg, #e74c3c, #c0392b);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-family: 'Cairo', sans-serif;
+                font-weight: bold;
+                box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+                z-index: 1000;
+                transition: all 0.3s ease;
+            `;
+
+            diagnosticBtn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 6px 20px rgba(231, 76, 60, 0.4)';
+            });
+
+            diagnosticBtn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 4px 15px rgba(231, 76, 60, 0.3)';
+            });
+
+            diagnosticBtn.addEventListener('click', function() {
+                window.open('advanced-diagnostic-tool.html', '_blank');
+            });
+
+            document.body.appendChild(diagnosticBtn);
+        });
+    </script>
+</body>
+</html>

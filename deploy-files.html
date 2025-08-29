@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تجميع ملفات النشر - الجبرني ويب</title>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #f5f6fa;
+            margin: 0;
+            padding: 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .content {
+            padding: 2rem;
+        }
+        .file-section {
+            margin-bottom: 2rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .file-header {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .file-content {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        .file-code {
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            background: #2d3748;
+            color: #e2e8f0;
+            margin: 0;
+        }
+        .download-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .download-btn:hover {
+            background: #218838;
+        }
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .file-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .file-name {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+        .file-size {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        .status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .status.ready {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.updated {
+            background: #cce5ff;
+            color: #004085;
+        }
+        .status.new {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .instructions {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #0056b3;
+        }
+        .step {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+        .download-all {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .download-all button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        .download-all button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 ملفات النشر جاهزة - الجبرني ويب</h1>
+            <p>جميع الملفات محدثة ومحسنة للنشر على GitHub Pages</p>
+        </div>
+        
+        <div class="content">
+            <div class="instructions">
+                <h3>📋 تعليمات النشر السريع</h3>
+                <div class="step">
+                    <strong>الخطوة 1:</strong> اذهب إلى <a href="https://github.com/aljabrani-web/aljabrani-web.github.io" target="_blank">مستودع GitHub</a>
+                </div>
+                <div class="step">
+                    <strong>الخطوة 2:</strong> اضغط "uploading an existing file" أو اسحب الملفات مباشرة
+                </div>
+                <div class="step">
+                    <strong>الخطوة 3:</strong> ارفع جميع الملفات أدناه (يمكن رفعها دفعة واحدة)
+                </div>
+                <div class="step">
+                    <strong>الخطوة 4:</strong> اذهب إلى Settings → Pages وفعّل النشر
+                </div>
+                <div class="step">
+                    <strong>الخطوة 5:</strong> انتظر 5-10 دقائق ثم اختبر الروابط
+                </div>
+            </div>
+
+            <div class="download-all">
+                <button onclick="downloadAllFiles()">
+                    📦 تحميل جميع الملفات دفعة واحدة
+                </button>
+            </div>
+
+            <h2>📁 ملفات الموقع الرئيسي</h2>
+            <div class="file-list">
+                <div class="file-item">
+                    <div class="file-name">index.html</div>
+                    <div class="file-size">~35 KB</div>
+                    <span class="status updated">محدث مع SEO</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">auto-updater.js</div>
+                    <div class="file-size">~12 KB</div>
+                    <span class="status new">جديد</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">seo-optimization.js</div>
+                    <div class="file-size">~8 KB</div>
+                    <span class="status new">جديد</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">robots.txt</div>
+                    <div class="file-size">~1 KB</div>
+                    <span class="status updated">محدث</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">sitemap.xml</div>
+                    <div class="file-size">~2 KB</div>
+                    <span class="status updated">محدث</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">manifest.json</div>
+                    <div class="file-size">~1 KB</div>
+                    <span class="status updated">محدث</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">styles.css</div>
+                    <div class="file-size">~25 KB</div>
+                    <span class="status ready">جاهز</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">script.js</div>
+                    <div class="file-size">~15 KB</div>
+                    <span class="status ready">جاهز</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">blog.html</div>
+                    <div class="file-size">~8 KB</div>
+                    <span class="status ready">جاهز</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">404.html</div>
+                    <div class="file-size">~3 KB</div>
+                    <span class="status ready">جاهز</span>
+                </div>
+            </div>
+
+            <h2>🔧 ملفات لوحة التحكم</h2>
+            <div class="file-list">
+                <div class="file-item">
+                    <div class="file-name">admin/dashboard.html</div>
+                    <div class="file-size">~18 KB</div>
+                    <span class="status updated">محدث</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">admin/admin-core.js</div>
+                    <div class="file-size">~22 KB</div>
+                    <span class="status updated">بدون بيانات وهمية</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">admin/live-updater.js</div>
+                    <div class="file-size">~15 KB</div>
+                    <span class="status new">جديد</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">admin/deployment-test.js</div>
+                    <div class="file-size">~20 KB</div>
+                    <span class="status new">جديد</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">admin/.htaccess</div>
+                    <div class="file-size">~3 KB</div>
+                    <span class="status new">حماية</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">admin/login.html</div>
+                    <div class="file-size">~12 KB</div>
+                    <span class="status ready">جاهز</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">admin/admin-styles.css</div>
+                    <div class="file-size">~35 KB</div>
+                    <span class="status ready">جاهز</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">admin/website-updater.js</div>
+                    <div class="file-size">~18 KB</div>
+                    <span class="status ready">جاهز</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">admin/dashboard.js</div>
+                    <div class="file-size">~45 KB</div>
+                    <span class="status ready">جاهز</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-name">admin/README.md</div>
+                    <div class="file-size">~8 KB</div>
+                    <span class="status ready">جاهز</span>
+                </div>
+            </div>
+
+            <div class="download-all">
+                <button onclick="testDeployment()">
+                    🧪 اختبار النشر بعد الرفع
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function downloadAllFiles() {
+            alert('سيتم تحميل جميع الملفات. تأكد من رفعها جميعاً إلى GitHub!');
+            
+            // قائمة جميع الملفات للتحميل
+            const files = [
+                'index.html',
+                'styles.css', 
+                'script.js',
+                'auto-updater.js',
+                'seo-optimization.js',
+                'blog.html',
+                '404.html',
+                'robots.txt',
+                'sitemap.xml',
+                'manifest.json'
+            ];
+            
+            files.forEach(file => {
+                setTimeout(() => {
+                    const link = document.createElement('a');
+                    link.href = file;
+                    link.download = file;
+                    link.click();
+                }, 100);
+            });
+        }
+        
+        function testDeployment() {
+            const testUrl = 'https://aljabrani-web.github.io';
+            const adminUrl = 'https://aljabrani-web.github.io/admin/login.html';
+            
+            if (confirm('هل تم رفع جميع الملفات وتفعيل GitHub Pages؟')) {
+                window.open(testUrl, '_blank');
+                setTimeout(() => {
+                    window.open(adminUrl, '_blank');
+                }, 2000);
+            } else {
+                alert('يرجى رفع جميع الملفات أولاً ثم تفعيل GitHub Pages من Settings → Pages');
+            }
+        }
+        
+        // إضافة معلومات النشر
+        document.addEventListener('DOMContentLoaded', function() {
+            const deployInfo = document.createElement('div');
+            deployInfo.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 1rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                max-width: 300px;
+                z-index: 1000;
+            `;
+            deployInfo.innerHTML = `
+                <h4 style="margin: 0 0 0.5rem 0;">🎯 الروابط النهائية</h4>
+                <p style="margin: 0; font-size: 12px;">
+                    <strong>الموقع:</strong> https://aljabrani-web.github.io<br>
+                    <strong>لوحة التحكم:</strong> /admin/login.html<br>
+                    <strong>الدخول:</strong> admin / admin123
+                </p>
+            `;
+            document.body.appendChild(deployInfo);
+        });
+    </script>
+</body>
+</html>

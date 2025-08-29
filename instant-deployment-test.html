@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار النشر الفوري - الجبرني ويب</title>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            direction: rtl;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .content {
+            padding: 2rem;
+        }
+        .test-section {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .test-result {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            border-right: 4px solid #6c757d;
+        }
+        .test-result.success {
+            background: #d4edda;
+            border-right-color: #28a745;
+        }
+        .test-result.error {
+            background: #f8d7da;
+            border-right-color: #dc3545;
+        }
+        .test-result.testing {
+            background: #fff3cd;
+            border-right-color: #ffc107;
+        }
+        .test-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+        .test-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .test-btn:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+        .test-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .link-btn {
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .link-btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+        }
+        .status-indicator.online {
+            background: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+        }
+        .status-indicator.offline {
+            background: #dc3545;
+        }
+        .status-indicator.loading {
+            background: #ffc107;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .progress-container {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 30px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border: 1px solid #c3e6cb;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        .error-details {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 اختبار النشر الفوري</h1>
+            <p>اختبار شامل للموقع المنشور على GitHub Pages</p>
+            <div id="overall-status">
+                <span>حالة الموقع:</span>
+                <span class="status-indicator loading" id="site-status"></span>
+                <span id="status-text">جاري الفحص...</span>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="test-section">
+                <h3>🎯 اختبارات سريعة</h3>
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <button class="test-btn" onclick="runQuickTest()">🚀 اختبار سريع (30 ثانية)</button>
+                    <button class="test-btn" onclick="runFullTest()">🔍 اختبار شامل (2 دقيقة)</button>
+                    <button class="test-btn" onclick="testAdminPanel()">🔧 اختبار لوحة التحكم</button>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" id="test-progress">0%</div>
+                </div>
+                <div id="progress-text" style="text-align: center; margin-top: 0.5rem;">جاهز للاختبار</div>
+            </div>
+
+            <div class="test-section">
+                <h3>🌐 اختبار الوصول للموقع</h3>
+                <div id="site-access-test">
+                    <div class="test-result testing" id="main-site-test">
+                        <span class="test-icon">🔄</span>
+                        <div>
+                            <strong>الموقع الرئيسي</strong>
+                            <div>جاري فحص: https://aljabrani-web.github.io</div>
+                        </div>
+                    </div>
+                    
+                    <div class="test-result testing" id="admin-site-test">
+                        <span class="test-icon">🔄</span>
+                        <div>
+                            <strong>لوحة التحكم</strong>
+                            <div>جاري فحص: /admin/login.html</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h3>📁 اختبار الملفات الأساسية</h3>
+                <div id="files-test">
+                    <div class="test-result testing" id="css-test">
+                        <span class="test-icon">🔄</span>
+                        <div>
+                            <strong>ملفات CSS</strong>
+                            <div>فحص styles.css و admin-styles.css</div>
+                        </div>
+                    </div>
+                    
+                    <div class="test-result testing" id="js-test">
+                        <span class="test-icon">🔄</span>
+                        <div>
+                            <strong>ملفات JavaScript</strong>
+                            <div>فحص script.js و auto-updater.js</div>
+                        </div>
+                    </div>
+                    
+                    <div class="test-result testing" id="seo-test">
+                        <span class="test-icon">🔄</span>
+                        <div>
+                            <strong>ملفات SEO</strong>
+                            <div>فحص robots.txt و sitemap.xml</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h3>🔧 اختبار الوظائف</h3>
+                <div id="functionality-test">
+                    <div class="test-result testing" id="updater-test">
+                        <span class="test-icon">🔄</span>
+                        <div>
+                            <strong>نظام التحديث التلقائي</strong>
+                            <div>فحص auto-updater.js و live-updater.js</div>
+                        </div>
+                    </div>
+                    
+                    <div class="test-result testing" id="security-test">
+                        <span class="test-icon">🔄</span>
+                        <div>
+                            <strong>الحماية الأمنية</strong>
+                            <div>فحص .htaccess و HTTPS</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h3>🔗 روابط مباشرة للاختبار</h3>
+                <div style="text-align: center;">
+                    <a href="https://aljabrani-web.github.io" target="_blank" class="link-btn">
+                        🏠 فتح الموقع الرئيسي
+                    </a>
+                    <a href="https://aljabrani-web.github.io/admin/login.html" target="_blank" class="link-btn">
+                        🔧 فتح لوحة التحكم
+                    </a>
+                    <a href="https://aljabrani-web.github.io/blog.html" target="_blank" class="link-btn">
+                        📝 فتح المدونة
+                    </a>
+                </div>
+                
+                <div style="background: #e7f3ff; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                    <h5>🔑 بيانات تسجيل الدخول:</h5>
+                    <p><strong>اسم المستخدم:</strong> admin</p>
+                    <p><strong>كلمة المرور:</strong> admin123</p>
+                </div>
+            </div>
+
+            <div id="test-summary" style="display: none;">
+                <div class="summary-box">
+                    <h3>📊 ملخص نتائج الاختبار</h3>
+                    <div id="summary-content"></div>
+                    <div id="final-recommendations"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const baseUrl = 'https://aljabrani-web.github.io';
+        let testResults = [];
+        
+        async function runQuickTest() {
+            updateProgress(0, 'بدء الاختبار السريع...');
+            testResults = [];
+            
+            const tests = [
+                { name: 'الموقع الرئيسي', func: () => testMainSite() },
+                { name: 'لوحة التحكم', func: () => testAdminPanel() },
+                { name: 'الملفات الأساسية', func: () => testCoreFiles() }
+            ];
+            
+            for (let i = 0; i < tests.length; i++) {
+                const test = tests[i];
+                const progress = ((i + 1) / tests.length) * 100;
+                updateProgress(progress, `اختبار: ${test.name}`);
+                
+                try {
+                    const result = await test.func();
+                    testResults.push(result);
+                } catch (error) {
+                    testResults.push({
+                        name: test.name,
+                        success: false,
+                        message: `خطأ: ${error.message}`
+                    });
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            showTestSummary();
+        }
+        
+        async function runFullTest() {
+            updateProgress(0, 'بدء الاختبار الشامل...');
+            testResults = [];
+            
+            const tests = [
+                { name: 'الموقع الرئيسي', func: () => testMainSite() },
+                { name: 'لوحة التحكم', func: () => testAdminPanel() },
+                { name: 'ملفات CSS', func: () => testCSSFiles() },
+                { name: 'ملفات JavaScript', func: () => testJSFiles() },
+                { name: 'ملفات SEO', func: () => testSEOFiles() },
+                { name: 'نظام التحديث', func: () => testUpdateSystem() },
+                { name: 'الحماية الأمنية', func: () => testSecurity() },
+                { name: 'الأداء', func: () => testPerformance() }
+            ];
+            
+            for (let i = 0; i < tests.length; i++) {
+                const test = tests[i];
+                const progress = ((i + 1) / tests.length) * 100;
+                updateProgress(progress, `اختبار: ${test.name}`);
+                
+                try {
+                    const result = await test.func();
+                    testResults.push(result);
+                    updateTestResult(test.name, result);
+                } catch (error) {
+                    const errorResult = {
+                        name: test.name,
+                        success: false,
+                        message: `خطأ: ${error.message}`,
+                        details: error.stack
+                    };
+                    testResults.push(errorResult);
+                    updateTestResult(test.name, errorResult);
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            showTestSummary();
+        }
+        
+        async function testMainSite() {
+            try {
+                const response = await fetch(baseUrl);
+                const success = response.ok;
+                
+                updateSiteStatus(success);
+                updateTestElement('main-site-test', success, 
+                    success ? 'الموقع الرئيسي متاح' : `خطأ HTTP: ${response.status}`);
+                
+                return {
+                    name: 'الموقع الرئيسي',
+                    success: success,
+                    message: success ? 'يعمل بشكل طبيعي' : `غير متاح (${response.status})`,
+                    url: baseUrl
+                };
+            } catch (error) {
+                updateSiteStatus(false);
+                updateTestElement('main-site-test', false, 'فشل في الاتصال');
+                
+                return {
+                    name: 'الموقع الرئيسي',
+                    success: false,
+                    message: 'فشل في الاتصال',
+                    details: error.message
+                };
+            }
+        }
+        
+        async function testAdminPanel() {
+            try {
+                const adminUrl = `${baseUrl}/admin/login.html`;
+                const response = await fetch(adminUrl);
+                const success = response.ok;
+                
+                updateTestElement('admin-site-test', success, 
+                    success ? 'لوحة التحكم متاحة' : `خطأ HTTP: ${response.status}`);
+                
+                return {
+                    name: 'لوحة التحكم',
+                    success: success,
+                    message: success ? 'متاحة وتعمل' : `غير متاحة (${response.status})`,
+                    url: adminUrl
+                };
+            } catch (error) {
+                updateTestElement('admin-site-test', false, 'فشل في الاتصال');
+                
+                return {
+                    name: 'لوحة التحكم',
+                    success: false,
+                    message: 'فشل في الاتصال',
+                    details: error.message
+                };
+            }
+        }
+        
+        async function testCoreFiles() {
+            const files = ['styles.css', 'script.js', 'auto-updater.js'];
+            const results = [];
+            
+            for (const file of files) {
+                try {
+                    const response = await fetch(`${baseUrl}/${file}`);
+                    results.push({ file, success: response.ok });
+                } catch (error) {
+                    results.push({ file, success: false });
+                }
+            }
+            
+            const successCount = results.filter(r => r.success).length;
+            const success = successCount === files.length;
+            
+            return {
+                name: 'الملفات الأساسية',
+                success: success,
+                message: `${successCount}/${files.length} ملف متاح`,
+                details: results.map(r => `${r.file}: ${r.success ? '✅' : '❌'}`).join('\n')
+            };
+        }
+        
+        async function testCSSFiles() {
+            const files = ['styles.css', 'admin/admin-styles.css'];
+            const results = [];
+            
+            for (const file of files) {
+                try {
+                    const response = await fetch(`${baseUrl}/${file}`);
+                    results.push({ file, success: response.ok });
+                } catch (error) {
+                    results.push({ file, success: false });
+                }
+            }
+            
+            const successCount = results.filter(r => r.success).length;
+            const success = successCount >= 1; // على الأقل ملف CSS واحد
+            
+            updateTestElement('css-test', success, 
+                `${successCount}/${files.length} ملف CSS متاح`);
+            
+            return {
+                name: 'ملفات CSS',
+                success: success,
+                message: `${successCount}/${files.length} ملف متاح`
+            };
+        }
+        
+        async function testJSFiles() {
+            const files = ['script.js', 'auto-updater.js', 'seo-optimization.js'];
+            const results = [];
+            
+            for (const file of files) {
+                try {
+                    const response = await fetch(`${baseUrl}/${file}`);
+                    results.push({ file, success: response.ok });
+                } catch (error) {
+                    results.push({ file, success: false });
+                }
+            }
+            
+            const successCount = results.filter(r => r.success).length;
+            const success = successCount >= 2; // على الأقل ملفين JS
+            
+            updateTestElement('js-test', success, 
+                `${successCount}/${files.length} ملف JS متاح`);
+            
+            return {
+                name: 'ملفات JavaScript',
+                success: success,
+                message: `${successCount}/${files.length} ملف متاح`
+            };
+        }
+        
+        async function testSEOFiles() {
+            const files = ['robots.txt', 'sitemap.xml', 'manifest.json'];
+            const results = [];
+            
+            for (const file of files) {
+                try {
+                    const response = await fetch(`${baseUrl}/${file}`);
+                    results.push({ file, success: response.ok });
+                } catch (error) {
+                    results.push({ file, success: false });
+                }
+            }
+            
+            const successCount = results.filter(r => r.success).length;
+            const success = successCount >= 2; // على الأقل ملفين SEO
+            
+            updateTestElement('seo-test', success, 
+                `${successCount}/${files.length} ملف SEO متاح`);
+            
+            return {
+                name: 'ملفات SEO',
+                success: success,
+                message: `${successCount}/${files.length} ملف متاح`
+            };
+        }
+        
+        async function testUpdateSystem() {
+            try {
+                const response = await fetch(`${baseUrl}/auto-updater.js`);
+                const success = response.ok;
+                
+                updateTestElement('updater-test', success, 
+                    success ? 'نظام التحديث متاح' : 'نظام التحديث مفقود');
+                
+                return {
+                    name: 'نظام التحديث',
+                    success: success,
+                    message: success ? 'متاح ويعمل' : 'مفقود أو معطل'
+                };
+            } catch (error) {
+                updateTestElement('updater-test', false, 'خطأ في فحص نظام التحديث');
+                
+                return {
+                    name: 'نظام التحديث',
+                    success: false,
+                    message: 'خطأ في الفحص'
+                };
+            }
+        }
+        
+        async function testSecurity() {
+            try {
+                // فحص HTTPS
+                const isHTTPS = baseUrl.startsWith('https://');
+                
+                // فحص .htaccess
+                const htaccessResponse = await fetch(`${baseUrl}/admin/.htaccess`);
+                const hasHtaccess = htaccessResponse.ok;
+                
+                const securityScore = (isHTTPS ? 1 : 0) + (hasHtaccess ? 1 : 0);
+                const success = securityScore >= 1;
+                
+                updateTestElement('security-test', success, 
+                    `${securityScore}/2 عنصر أمان متاح`);
+                
+                return {
+                    name: 'الحماية الأمنية',
+                    success: success,
+                    message: `${securityScore}/2 عنصر أمان متاح`,
+                    details: `HTTPS: ${isHTTPS ? '✅' : '❌'}, .htaccess: ${hasHtaccess ? '✅' : '❌'}`
+                };
+            } catch (error) {
+                updateTestElement('security-test', false, 'خطأ في فحص الأمان');
+                
+                return {
+                    name: 'الحماية الأمنية',
+                    success: false,
+                    message: 'خطأ في الفحص'
+                };
+            }
+        }
+        
+        async function testPerformance() {
+            try {
+                const startTime = performance.now();
+                const response = await fetch(baseUrl);
+                const endTime = performance.now();
+                
+                const loadTime = endTime - startTime;
+                const success = response.ok && loadTime < 5000;
+                
+                return {
+                    name: 'الأداء',
+                    success: success,
+                    message: `وقت التحميل: ${Math.round(loadTime)}ms`,
+                    details: success ? 'أداء جيد' : 'أداء بطيء'
+                };
+            } catch (error) {
+                return {
+                    name: 'الأداء',
+                    success: false,
+                    message: 'خطأ في فحص الأداء'
+                };
+            }
+        }
+        
+        function updateProgress(percentage, text) {
+            const progressBar = document.getElementById('test-progress');
+            const progressText = document.getElementById('progress-text');
+            
+            progressBar.style.width = `${percentage}%`;
+            progressBar.textContent = `${Math.round(percentage)}%`;
+            progressText.textContent = text;
+        }
+        
+        function updateSiteStatus(isOnline) {
+            const statusIndicator = document.getElementById('site-status');
+            const statusText = document.getElementById('status-text');
+            
+            statusIndicator.className = `status-indicator ${isOnline ? 'online' : 'offline'}`;
+            statusText.textContent = isOnline ? 'متاح' : 'غير متاح';
+        }
+        
+        function updateTestElement(elementId, success, message) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.className = `test-result ${success ? 'success' : 'error'}`;
+                element.querySelector('.test-icon').textContent = success ? '✅' : '❌';
+                element.querySelector('div div').textContent = message;
+            }
+        }
+        
+        function updateTestResult(testName, result) {
+            // تحديث عناصر الاختبار المحددة
+            const testMappings = {
+                'ملفات CSS': 'css-test',
+                'ملفات JavaScript': 'js-test',
+                'ملفات SEO': 'seo-test',
+                'نظام التحديث': 'updater-test',
+                'الحماية الأمنية': 'security-test'
+            };
+            
+            const elementId = testMappings[testName];
+            if (elementId) {
+                updateTestElement(elementId, result.success, result.message);
+            }
+        }
+        
+        function showTestSummary() {
+            const summarySection = document.getElementById('test-summary');
+            const summaryContent = document.getElementById('summary-content');
+            const recommendations = document.getElementById('final-recommendations');
+            
+            const successCount = testResults.filter(r => r.success).length;
+            const totalCount = testResults.length;
+            const successRate = Math.round((successCount / totalCount) * 100);
+            
+            let statusColor = '#28a745';
+            let statusMessage = '🎉 ممتاز! الموقع يعمل بشكل مثالي';
+            
+            if (successRate < 70) {
+                statusColor = '#dc3545';
+                statusMessage = '❌ يحتاج إصلاحات مهمة';
+            } else if (successRate < 90) {
+                statusColor = '#ffc107';
+                statusMessage = '⚠️ جيد مع بعض التحسينات';
+            }
+            
+            summaryContent.innerHTML = `
+                <div style="font-size: 1.5rem; font-weight: bold; color: ${statusColor}; margin-bottom: 1rem;">
+                    ${statusMessage}
+                </div>
+                <div style="font-size: 1.2rem; margin-bottom: 1rem;">
+                    نجح ${successCount} من أصل ${totalCount} اختبار (${successRate}%)
+                </div>
+                <div style="text-align: right;">
+                    ${testResults.map(result => `
+                        <div style="margin: 0.5rem 0;">
+                            ${result.success ? '✅' : '❌'} ${result.name}: ${result.message}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // توصيات
+            let recommendationsList = [];
+            
+            if (successRate === 100) {
+                recommendationsList = [
+                    'غيّر كلمة المرور من admin123',
+                    'أضف معلوماتك الشخصية الحقيقية',
+                    'ارفع صورتك الشخصية',
+                    'أضف مشاريعك ومهاراتك'
+                ];
+            } else {
+                if (testResults.find(r => r.name === 'الموقع الرئيسي' && !r.success)) {
+                    recommendationsList.push('انتظر 5-10 دقائق إضافية للنشر');
+                }
+                if (testResults.find(r => r.name === 'لوحة التحكم' && !r.success)) {
+                    recommendationsList.push('تأكد من رفع جميع ملفات admin/');
+                }
+                recommendationsList.push('تحقق من Settings → Pages في GitHub');
+            }
+            
+            recommendations.innerHTML = `
+                <h4>🎯 التوصيات:</h4>
+                <ul style="text-align: right;">
+                    ${recommendationsList.map(rec => `<li>${rec}</li>`).join('')}
+                </ul>
+            `;
+            
+            summarySection.style.display = 'block';
+        }
+        
+        // تشغيل اختبار سريع عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                testMainSite();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

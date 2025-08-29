@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مساعد رفع الملفات إلى GitHub</title>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            direction: rtl;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #24292e, #586069);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .content {
+            padding: 2rem;
+        }
+        .step {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-right: 5px solid #28a745;
+        }
+        .step h3 {
+            margin: 0 0 1rem 0;
+            color: #28a745;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .step-number {
+            background: #28a745;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .file-list {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 1rem 0;
+        }
+        .action-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0.5rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .action-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        .action-btn.github {
+            background: #24292e;
+        }
+        .action-btn.github:hover {
+            background: #1a1e22;
+        }
+        .action-btn.test {
+            background: #17a2b8;
+        }
+        .action-btn.test:hover {
+            background: #138496;
+        }
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        .status-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .file-item {
+            background: #f8f9fa;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 12px;
+            border-right: 3px solid #28a745;
+        }
+        .timer {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #28a745;
+            text-align: center;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 مساعد رفع الملفات إلى GitHub</h1>
+            <p>دليل تفاعلي لرفع جميع ملفات المشروع (31 ملف) إلى المستودع</p>
+        </div>
+        
+        <div class="content">
+            <div class="status-box">
+                <h3>📊 حالة المشروع</h3>
+                <p><strong>إجمالي الملفات:</strong> 31 ملف | <strong>الحالة:</strong> ✅ جاهز للرفع</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="upload-progress"></div>
+                </div>
+                <div id="progress-text">جاري التحضير...</div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">1</span>فتح GitHub والتحضير</h3>
+                <p>افتح المستودع في تبويب جديد وتأكد من تسجيل الدخول:</p>
+                <a href="https://github.com/aljabrani-web/aljabrani-web.github.io" target="_blank" class="action-btn github">
+                    🐙 فتح المستودع في GitHub
+                </a>
+                <div class="warning-box">
+                    <strong>⚠️ تأكد من:</strong> تسجيل الدخول باسم المستخدم: aljabrani-web
+                </div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">2</span>رفع الملفات الرئيسية</h3>
+                <p>في صفحة المستودع، اضغط "uploading an existing file" أو اسحب الملفات:</p>
+                
+                <h4>📁 ملفات الموقع الرئيسي (21 ملف):</h4>
+                <div class="file-grid">
+                    <div class="file-item">index.html</div>
+                    <div class="file-item">styles.css</div>
+                    <div class="file-item">script.js</div>
+                    <div class="file-item">auto-updater.js</div>
+                    <div class="file-item">seo-optimization.js</div>
+                    <div class="file-item">blog.html</div>
+                    <div class="file-item">404.html</div>
+                    <div class="file-item">robots.txt</div>
+                    <div class="file-item">sitemap.xml</div>
+                    <div class="file-item">manifest.json</div>
+                    <div class="file-item">prepare-deployment.js</div>
+                    <div class="file-item">test-deployment.js</div>
+                    <div class="file-item">deploy-files.html</div>
+                    <div class="file-item">github-upload-helper.html</div>
+                    <div class="file-item">README.md</div>
+                    <div class="file-item">USAGE-GUIDE.md</div>
+                    <div class="file-item">DEPLOYMENT-GUIDE.md</div>
+                    <div class="file-item">DEPLOYMENT-CHECKLIST.md</div>
+                    <div class="file-item">QUICK-DEPLOY.md</div>
+                    <div class="file-item">FILES-READY-REPORT.md</div>
+                    <div class="file-item">analytics.js</div>
+                </div>
+                
+                <button class="action-btn" onclick="markMainFilesUploaded()">
+                    ✅ تم رفع الملفات الرئيسية
+                </button>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">3</span>رفع ملفات لوحة التحكم</h3>
+                <p>ارفع ملفات مجلد admin/ (يمكن إنشاء المجلد تلقائياً عند رفع أول ملف):</p>
+                
+                <h4>🔧 ملفات admin/ (10 ملف):</h4>
+                <div class="file-grid">
+                    <div class="file-item">admin/login.html</div>
+                    <div class="file-item">admin/dashboard.html</div>
+                    <div class="file-item">admin/admin-styles.css</div>
+                    <div class="file-item">admin/admin-core.js</div>
+                    <div class="file-item">admin/live-updater.js</div>
+                    <div class="file-item">admin/website-updater.js</div>
+                    <div class="file-item">admin/dashboard.js</div>
+                    <div class="file-item">admin/deployment-test.js</div>
+                    <div class="file-item">admin/.htaccess</div>
+                    <div class="file-item">admin/README.md</div>
+                </div>
+                
+                <div class="warning-box">
+                    <strong>💡 نصيحة:</strong> عند رفع ملف admin/login.html، اكتب المسار كاملاً في اسم الملف وسيتم إنشاء المجلد تلقائياً
+                </div>
+                
+                <button class="action-btn" onclick="markAdminFilesUploaded()">
+                    ✅ تم رفع ملفات admin/
+                </button>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">4</span>كتابة رسالة Commit</h3>
+                <p>في مربع "Commit changes"، اكتب:</p>
+                <div class="file-list">
+نشر الموقع الشخصي مع لوحة التحكم الإدارية
+
+- إضافة الموقع الرئيسي مع تحسينات SEO
+- إضافة لوحة تحكم إدارية متكاملة
+- نظام تحديث مباشر وفوري
+- حماية أمنية متقدمة
+- أدوات اختبار ونشر تلقائية
+
+الملفات المضافة: 31 ملف
+المميزات: تحديث مباشر، SEO محسن، آمن ومحمي
+                </div>
+                <button class="action-btn" onclick="markCommitDone()">
+                    ✅ تم كتابة رسالة Commit
+                </button>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">5</span>تفعيل GitHub Pages</h3>
+                <p>بعد رفع جميع الملفات، فعّل GitHub Pages:</p>
+                <ol>
+                    <li>اضغط تبويب "Settings" في المستودع</li>
+                    <li>انزل في القائمة الجانبية إلى "Pages"</li>
+                    <li>في Source، اختر "Deploy from a branch"</li>
+                    <li>اختر Branch: "main"</li>
+                    <li>اختر Folder: "/ (root)"</li>
+                    <li>اضغط "Save"</li>
+                </ol>
+                
+                <a href="https://github.com/aljabrani-web/aljabrani-web.github.io/settings/pages" target="_blank" class="action-btn">
+                    ⚙️ فتح إعدادات Pages
+                </a>
+                
+                <button class="action-btn" onclick="markPagesEnabled()">
+                    ✅ تم تفعيل GitHub Pages
+                </button>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">6</span>انتظار النشر واختبار الموقع</h3>
+                <p>انتظر 5-10 دقائق لاكتمال النشر، ثم اختبر الروابط:</p>
+                
+                <div class="timer" id="countdown">⏰ انتظار النشر: 10:00</div>
+                
+                <div style="text-align: center; margin: 2rem 0;">
+                    <a href="https://aljabrani-web.github.io" target="_blank" class="action-btn test">
+                        🏠 اختبار الموقع الرئيسي
+                    </a>
+                    <a href="https://aljabrani-web.github.io/admin/login.html" target="_blank" class="action-btn test">
+                        🔧 اختبار لوحة التحكم
+                    </a>
+                </div>
+                
+                <div class="status-box">
+                    <h4>🎯 بيانات تسجيل الدخول:</h4>
+                    <p><strong>اسم المستخدم:</strong> admin</p>
+                    <p><strong>كلمة المرور:</strong> admin123</p>
+                    <p><strong>⚠️ مهم:</strong> غيّر كلمة المرور فور تسجيل الدخول!</p>
+                </div>
+                
+                <button class="action-btn" onclick="markTestingDone()">
+                    ✅ تم اختبار الموقع بنجاح
+                </button>
+            </div>
+
+            <div class="step" id="final-report" style="display: none;">
+                <h3><span class="step-number">🎉</span>تقرير النشر النهائي</h3>
+                <div class="status-box">
+                    <h4>🎊 تهانينا! تم نشر موقعك بنجاح</h4>
+                    
+                    <h5>🔗 الروابط النهائية:</h5>
+                    <p><strong>الموقع الرئيسي:</strong> <a href="https://aljabrani-web.github.io" target="_blank">https://aljabrani-web.github.io</a></p>
+                    <p><strong>لوحة التحكم:</strong> <a href="https://aljabrani-web.github.io/admin/login.html" target="_blank">https://aljabrani-web.github.io/admin/login.html</a></p>
+                    
+                    <h5>📊 إحصائيات النشر:</h5>
+                    <p>✅ تم رفع 31 ملف بنجاح</p>
+                    <p>✅ تم تفعيل GitHub Pages</p>
+                    <p>✅ الموقع متاح على الإنترنت</p>
+                    <p>✅ لوحة التحكم تعمل بشكل طبيعي</p>
+                    
+                    <h5>🎯 الخطوات التالية:</h5>
+                    <ul style="text-align: right;">
+                        <li>غيّر كلمة المرور من admin123</li>
+                        <li>أضف معلوماتك الشخصية الحقيقية</li>
+                        <li>ارفع صورتك الشخصية</li>
+                        <li>أضف مشاريعك ومهاراتك</li>
+                        <li>اكتب مقال ترحيبي في المدونة</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let uploadProgress = 0;
+        let countdownTimer;
+        
+        function updateProgress(percentage, text) {
+            document.getElementById('upload-progress').style.width = percentage + '%';
+            document.getElementById('progress-text').textContent = text;
+        }
+        
+        function markMainFilesUploaded() {
+            uploadProgress = 60;
+            updateProgress(uploadProgress, 'تم رفع الملفات الرئيسية (21/31 ملف)');
+        }
+        
+        function markAdminFilesUploaded() {
+            uploadProgress = 90;
+            updateProgress(uploadProgress, 'تم رفع جميع الملفات (31/31 ملف)');
+        }
+        
+        function markCommitDone() {
+            uploadProgress = 95;
+            updateProgress(uploadProgress, 'تم حفظ التغييرات في GitHub');
+        }
+        
+        function markPagesEnabled() {
+            uploadProgress = 98;
+            updateProgress(uploadProgress, 'تم تفعيل GitHub Pages - جاري النشر...');
+            startCountdown();
+        }
+        
+        function markTestingDone() {
+            uploadProgress = 100;
+            updateProgress(uploadProgress, '🎉 تم النشر بنجاح!');
+            document.getElementById('final-report').style.display = 'block';
+            if (countdownTimer) clearInterval(countdownTimer);
+        }
+        
+        function startCountdown() {
+            let timeLeft = 600; // 10 minutes
+            const countdownElement = document.getElementById('countdown');
+            
+            countdownTimer = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                countdownElement.textContent = `⏰ انتظار النشر: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdownTimer);
+                    countdownElement.textContent = '✅ يمكنك الآن اختبار الموقع!';
+                    countdownElement.style.color = '#28a745';
+                }
+                timeLeft--;
+            }, 1000);
+        }
+        
+        // تحديث التقدم الأولي
+        updateProgress(0, 'جاهز للبدء - اضغط الأزرار بالترتيب');
+        
+        // إضافة تأثيرات بصرية
+        document.addEventListener('DOMContentLoaded', function() {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((step, index) => {
+                step.style.opacity = '0';
+                step.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    step.style.transition = 'all 0.5s ease';
+                    step.style.opacity = '1';
+                    step.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

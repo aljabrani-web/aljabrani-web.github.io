@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://aljabrani-web.github.io/sitemap.xml
+
+# Allow main website files
+Allow: /index.html
+Allow: /blog.html
+Allow: /styles.css
+Allow: /script.js
+Allow: /auto-updater.js
+Allow: /*.css$
+Allow: /*.js$
+
+# Admin panel - محمي بكلمة مرور
+Allow: /admin/
+
+# Disallow sensitive files
+Disallow: /*.json$
+Disallow: /*.log$
+Disallow: /private/
+
+# SEO optimization
+Crawl-delay: 1
+
+# Social media verification
+# يمكن إضافة ملفات التحقق هنا
