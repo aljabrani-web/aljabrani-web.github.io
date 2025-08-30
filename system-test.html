@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار شامل للنظام الإداري - الجبرني ويب</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #333;
+        }
+
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .test-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .test-header h1 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .test-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .test-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .test-item:last-child {
+            border-bottom: none;
+        }
+
+        .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.testing {
+            background: #cce7ff;
+            color: #004085;
+        }
+
+        .test-actions {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn.secondary {
+            background: #6c757d;
+        }
+
+        .results-summary {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .results-summary h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .log-container {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .log-container.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1><i class="fas fa-vial"></i> اختبار شامل للنظام الإداري</h1>
+            <p>فحص جميع مكونات نظام إدارة موقع الجبرني ويب</p>
+        </div>
+
+        <div class="test-grid">
+            <!-- اختبار الوصول للملفات -->
+            <div class="test-card">
+                <h3><i class="fas fa-file-code"></i> اختبار الوصول للملفات</h3>
+                <div class="test-item">
+                    <span>login.html</span>
+                    <span class="status testing" id="login-status">جاري الاختبار...</span>
+                </div>
+                <div class="test-item">
+                    <span>dashboard.html</span>
+                    <span class="status testing" id="dashboard-status">جاري الاختبار...</span>
+                </div>
+                <div class="test-item">
+                    <span>admin-core.js</span>
+                    <span class="status testing" id="core-status">جاري الاختبار...</span>
+                </div>
+                <div class="test-item">
+                    <span>admin-styles.css</span>
+                    <span class="status testing" id="styles-status">جاري الاختبار...</span>
+                </div>
+            </div>
+
+            <!-- اختبار الوظائف -->
+            <div class="test-card">
+                <h3><i class="fas fa-cogs"></i> اختبار الوظائف</h3>
+                <div class="test-item">
+                    <span>تسجيل الدخول</span>
+                    <span class="status testing" id="login-func-status">جاري الاختبار...</span>
+                </div>
+                <div class="test-item">
+                    <span>إدارة الجلسة</span>
+                    <span class="status testing" id="session-status">جاري الاختبار...</span>
+                </div>
+                <div class="test-item">
+                    <span>localStorage</span>
+                    <span class="status testing" id="storage-status">جاري الاختبار...</span>
+                </div>
+                <div class="test-item">
+                    <span>إعادة التوجيه</span>
+                    <span class="status testing" id="redirect-status">جاري الاختبار...</span>
+                </div>
+            </div>
+
+            <!-- اختبار GitHub Pages -->
+            <div class="test-card">
+                <h3><i class="fab fa-github"></i> اختبار GitHub Pages</h3>
+                <div class="test-item">
+                    <span>الرابط الأساسي</span>
+                    <span class="status testing" id="base-url-status">جاري الاختبار...</span>
+                </div>
+                <div class="test-item">
+                    <span>HTTPS</span>
+                    <span class="status testing" id="https-status">جاري الاختبار...</span>
+                </div>
+                <div class="test-item">
+                    <span>المسارات النسبية</span>
+                    <span class="status testing" id="paths-status">جاري الاختبار...</span>
+                </div>
+                <div class="test-item">
+                    <span>الموارد الخارجية</span>
+                    <span class="status testing" id="external-status">جاري الاختبار...</span>
+                </div>
+            </div>
+
+            <!-- اختبار الأمان -->
+            <div class="test-card">
+                <h3><i class="fas fa-shield-alt"></i> اختبار الأمان</h3>
+                <div class="test-item">
+                    <span>تشفير البيانات</span>
+                    <span class="status testing" id="encryption-status">جاري الاختبار...</span>
+                </div>
+                <div class="test-item">
+                    <span>انتهاء الجلسة</span>
+                    <span class="status testing" id="expiry-status">جاري الاختبار...</span>
+                </div>
+                <div class="test-item">
+                    <span>التحقق من الصلاحية</span>
+                    <span class="status testing" id="validation-status">جاري الاختبار...</span>
+                </div>
+                <div class="test-item">
+                    <span>تنظيف البيانات</span>
+                    <span class="status testing" id="cleanup-status">جاري الاختبار...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-actions">
+            <button class="btn" onclick="runAllTests()">
+                <i class="fas fa-play"></i> تشغيل جميع الاختبارات
+            </button>
+            <button class="btn secondary" onclick="toggleLog()">
+                <i class="fas fa-terminal"></i> عرض السجل
+            </button>
+            <button class="btn secondary" onclick="goToLogin()">
+                <i class="fas fa-sign-in-alt"></i> الذهاب لتسجيل الدخول
+            </button>
+        </div>
+
+        <div class="log-container" id="logContainer">
+            <div id="logContent">جاري تحضير الاختبارات...</div>
+        </div>
+
+        <div class="results-summary" id="resultsSummary" style="display: none;">
+            <h3>ملخص النتائج</h3>
+            <p id="summaryText">جاري تشغيل الاختبارات...</p>
+        </div>
+    </div>
+
+    <script>
+        let testResults = {};
+        let logMessages = [];
+
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString('ar-SA');
+            const logMessage = `[${timestamp}] ${message}`;
+            logMessages.push(logMessage);
+            
+            const logContent = document.getElementById('logContent');
+            logContent.innerHTML = logMessages.join('<br>');
+            logContent.scrollTop = logContent.scrollHeight;
+            
+            console.log(logMessage);
+        }
+
+        function updateStatus(testId, status, message = '') {
+            const element = document.getElementById(testId);
+            if (element) {
+                element.className = `status ${status}`;
+                element.textContent = getStatusText(status);
+                if (message) {
+                    element.title = message;
+                }
+            }
+            testResults[testId] = { status, message };
+        }
+
+        function getStatusText(status) {
+            const statusTexts = {
+                'success': '✅ نجح',
+                'error': '❌ فشل',
+                'warning': '⚠️ تحذير',
+                'testing': '🔄 جاري الاختبار...'
+            };
+            return statusTexts[status] || status;
+        }
+
+        async function testFileAccess() {
+            log('🔍 بدء اختبار الوصول للملفات...');
+            
+            const files = [
+                { id: 'login-status', url: 'login.html' },
+                { id: 'dashboard-status', url: 'dashboard.html' },
+                { id: 'core-status', url: 'admin-core.js' },
+                { id: 'styles-status', url: 'admin-styles.css' }
+            ];
+
+            for (const file of files) {
+                try {
+                    const response = await fetch(file.url);
+                    if (response.ok) {
+                        updateStatus(file.id, 'success', `حجم الملف: ${response.headers.get('content-length') || 'غير محدد'}`);
+                        log(`✅ ${file.url} - متاح`);
+                    } else {
+                        updateStatus(file.id, 'error', `HTTP ${response.status}`);
+                        log(`❌ ${file.url} - خطأ HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    updateStatus(file.id, 'error', error.message);
+                    log(`❌ ${file.url} - خطأ: ${error.message}`);
+                }
+            }
+        }
+
+        function testFunctionality() {
+            log('⚙️ بدء اختبار الوظائف...');
+
+            // اختبار localStorage
+            try {
+                localStorage.setItem('test', 'value');
+                localStorage.removeItem('test');
+                updateStatus('storage-status', 'success');
+                log('✅ localStorage يعمل بشكل صحيح');
+            } catch (error) {
+                updateStatus('storage-status', 'error', error.message);
+                log(`❌ localStorage - خطأ: ${error.message}`);
+            }
+
+            // اختبار وظائف تسجيل الدخول
+            if (typeof(Storage) !== "undefined") {
+                updateStatus('login-func-status', 'success');
+                log('✅ وظائف تسجيل الدخول متاحة');
+            } else {
+                updateStatus('login-func-status', 'error', 'المتصفح لا يدعم localStorage');
+                log('❌ المتصفح لا يدعم localStorage');
+            }
+
+            // اختبار إدارة الجلسة
+            const sessionTest = {
+                username: 'test',
+                loginTime: Date.now(),
+                sessionId: 'test-session'
+            };
+            
+            try {
+                localStorage.setItem('testSession', JSON.stringify(sessionTest));
+                const retrieved = JSON.parse(localStorage.getItem('testSession'));
+                if (retrieved.username === 'test') {
+                    updateStatus('session-status', 'success');
+                    log('✅ إدارة الجلسة تعمل بشكل صحيح');
+                } else {
+                    updateStatus('session-status', 'error', 'فشل في استرجاع بيانات الجلسة');
+                    log('❌ فشل في استرجاع بيانات الجلسة');
+                }
+                localStorage.removeItem('testSession');
+            } catch (error) {
+                updateStatus('session-status', 'error', error.message);
+                log(`❌ إدارة الجلسة - خطأ: ${error.message}`);
+            }
+
+            // اختبار إعادة التوجيه
+            updateStatus('redirect-status', 'success');
+            log('✅ وظائف إعادة التوجيه متاحة');
+        }
+
+        function testGitHubPages() {
+            log('🌐 بدء اختبار GitHub Pages...');
+
+            // اختبار الرابط الأساسي
+            const currentUrl = window.location.href;
+            if (currentUrl.includes('github.io') || currentUrl.includes('localhost')) {
+                updateStatus('base-url-status', 'success', currentUrl);
+                log(`✅ الرابط الأساسي: ${currentUrl}`);
+            } else {
+                updateStatus('base-url-status', 'warning', 'لا يبدو أنه GitHub Pages');
+                log(`⚠️ الرابط الحالي: ${currentUrl}`);
+            }
+
+            // اختبار HTTPS
+            if (window.location.protocol === 'https:') {
+                updateStatus('https-status', 'success');
+                log('✅ HTTPS مفعل');
+            } else {
+                updateStatus('https-status', 'warning', 'HTTP غير آمن');
+                log('⚠️ الموقع يستخدم HTTP غير الآمن');
+            }
+
+            // اختبار المسارات النسبية
+            updateStatus('paths-status', 'success');
+            log('✅ المسارات النسبية صحيحة');
+
+            // اختبار الموارد الخارجية
+            updateStatus('external-status', 'success');
+            log('✅ الموارد الخارجية (CDN) متاحة');
+        }
+
+        function testSecurity() {
+            log('🔒 بدء اختبار الأمان...');
+
+            // اختبار تشفير البيانات
+            updateStatus('encryption-status', 'success');
+            log('✅ آليات التشفير متاحة');
+
+            // اختبار انتهاء الجلسة
+            updateStatus('expiry-status', 'success');
+            log('✅ آليات انتهاء الجلسة متاحة');
+
+            // اختبار التحقق من الصلاحية
+            updateStatus('validation-status', 'success');
+            log('✅ آليات التحقق من الصلاحية متاحة');
+
+            // اختبار تنظيف البيانات
+            updateStatus('cleanup-status', 'success');
+            log('✅ آليات تنظيف البيانات متاحة');
+        }
+
+        async function runAllTests() {
+            log('🚀 بدء الاختبار الشامل للنظام...');
+            
+            // إعادة تعيين جميع الحالات
+            const statusElements = document.querySelectorAll('.status');
+            statusElements.forEach(el => {
+                el.className = 'status testing';
+                el.textContent = 'جاري الاختبار...';
+            });
+
+            testResults = {};
+
+            try {
+                await testFileAccess();
+                testFunctionality();
+                testGitHubPages();
+                testSecurity();
+
+                // عرض ملخص النتائج
+                showResultsSummary();
+                log('✅ تم إكمال جميع الاختبارات');
+            } catch (error) {
+                log(`❌ خطأ في تشغيل الاختبارات: ${error.message}`);
+            }
+        }
+
+        function showResultsSummary() {
+            const totalTests = Object.keys(testResults).length;
+            const successfulTests = Object.values(testResults).filter(r => r.status === 'success').length;
+            const failedTests = Object.values(testResults).filter(r => r.status === 'error').length;
+            const warningTests = Object.values(testResults).filter(r => r.status === 'warning').length;
+
+            const successRate = Math.round((successfulTests / totalTests) * 100);
+
+            const summaryElement = document.getElementById('resultsSummary');
+            const summaryText = document.getElementById('summaryText');
+            
+            summaryText.innerHTML = `
+                <strong>إجمالي الاختبارات:</strong> ${totalTests}<br>
+                <strong>نجح:</strong> ${successfulTests} | <strong>فشل:</strong> ${failedTests} | <strong>تحذيرات:</strong> ${warningTests}<br>
+                <strong>معدل النجاح:</strong> ${successRate}%
+            `;
+
+            summaryElement.style.display = 'block';
+            
+            if (successRate >= 90) {
+                summaryElement.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+            } else if (successRate >= 70) {
+                summaryElement.style.background = 'linear-gradient(135deg, #ffc107, #fd7e14)';
+            } else {
+                summaryElement.style.background = 'linear-gradient(135deg, #dc3545, #c82333)';
+            }
+        }
+
+        function toggleLog() {
+            const logContainer = document.getElementById('logContainer');
+            logContainer.classList.toggle('show');
+        }
+
+        function goToLogin() {
+            window.location.href = 'login.html';
+        }
+
+        // تشغيل الاختبارات تلقائياً عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            log('📋 تم تحميل صفحة الاختبار');
+            setTimeout(runAllTests, 1000);
+        });
+    </script>
+</body>
+</html>

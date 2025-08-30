@@ -5,17 +5,50 @@ class DashboardManager {
     }
 
     init() {
-        this.loadPersonalInfoForm();
-        this.setupFormHandlers();
+        console.log('🚀 Initializing Dashboard Manager...');
+
+        // Wait for DOM to be fully ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                this.initializeForms();
+            });
+        } else {
+            this.initializeForms();
+        }
+    }
+
+    initializeForms() {
+        try {
+            this.loadPersonalInfoForm();
+            this.loadSkillsForm();
+            this.loadPortfolioForm();
+            this.loadBlogForm();
+            this.loadSettingsForm();
+            this.setupFormHandlers();
+            this.setupNavigationHandlers();
+            console.log('✅ All forms loaded successfully');
+        } catch (error) {
+            console.error('❌ Error initializing forms:', error);
+        }
     }
 
     // ===== Personal Info Management =====
     loadPersonalInfoForm() {
+        console.log('📝 Loading Personal Info Form...');
         const personalInfoSection = document.getElementById('personal-info-section');
-        if (!personalInfoSection) return;
+        if (!personalInfoSection) {
+            console.error('❌ Personal info section not found');
+            return;
+        }
 
         const formContainer = personalInfoSection.querySelector('.form-container');
-        const data = window.adminCore.data.personalInfo;
+        if (!formContainer) {
+            console.error('❌ Form container not found');
+            return;
+        }
+
+        // Get data safely
+        const data = (window.adminCore && window.adminCore.data && window.adminCore.data.personalInfo) || {};
 
         formContainer.innerHTML = `
             <form id="personalInfoForm" class="admin-form">
@@ -163,6 +196,783 @@ class DashboardManager {
         };
 
         reader.readAsDataURL(file);
+    }
+
+    // ===== Skills Management =====
+    loadSkillsForm() {
+        console.log('🛠️ Loading Skills Form...');
+        const skillsSection = document.getElementById('skills-section');
+        if (!skillsSection) {
+            console.error('❌ Skills section not found');
+            return;
+        }
+
+        const formContainer = skillsSection.querySelector('.form-container');
+        if (!formContainer) {
+            console.error('❌ Skills form container not found');
+            return;
+        }
+
+        const skills = (window.adminCore && window.adminCore.data && window.adminCore.data.skills) || [];
+
+        formContainer.innerHTML = `
+            <div class="skills-manager">
+                <div class="skills-header">
+                    <button type="button" class="btn btn-primary" id="addSkillBtn">
+                        <i class="fas fa-plus"></i> إضافة مهارة جديدة
+                    </button>
+                </div>
+
+                <div class="skills-list" id="skillsList">
+                    ${this.renderSkillsList(skills)}
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-success" id="saveSkillsBtn">
+                        <i class="fas fa-save"></i> حفظ المهارات
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="resetSkillsBtn">
+                        <i class="fas fa-undo"></i> إعادة تعيين
+                    </button>
+                </div>
+            </div>
+        `;
+
+        this.setupSkillsHandlers();
+        console.log('✅ Skills form loaded successfully');
+    }
+
+    renderSkillsList(skills) {
+        if (!skills || skills.length === 0) {
+            return '<p class="no-skills">لا توجد مهارات مضافة بعد. اضغط على "إضافة مهارة جديدة" للبدء.</p>';
+        }
+
+        return skills.map((skill, index) => `
+            <div class="skill-item" data-index="${index}">
+                <div class="skill-info">
+                    <input type="text" class="skill-name" value="${skill.name || ''}" placeholder="اسم المهارة">
+                    <input type="number" class="skill-percentage" value="${skill.percentage || 0}" min="0" max="100" placeholder="النسبة %">
+                </div>
+                <div class="skill-actions">
+                    <button type="button" class="btn btn-danger btn-sm remove-skill" data-index="${index}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    setupSkillsHandlers() {
+        const addSkillBtn = document.getElementById('addSkillBtn');
+        const saveSkillsBtn = document.getElementById('saveSkillsBtn');
+        const resetSkillsBtn = document.getElementById('resetSkillsBtn');
+
+        if (addSkillBtn) {
+            addSkillBtn.addEventListener('click', () => this.addNewSkill());
+        }
+
+        if (saveSkillsBtn) {
+            saveSkillsBtn.addEventListener('click', () => this.saveSkills());
+        }
+
+        if (resetSkillsBtn) {
+            resetSkillsBtn.addEventListener('click', () => this.resetSkills());
+        }
+
+        // Setup remove skill handlers
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.remove-skill')) {
+                const index = e.target.closest('.remove-skill').dataset.index;
+                this.removeSkill(index);
+            }
+        });
+    }
+
+    addNewSkill() {
+        const skillsList = document.getElementById('skillsList');
+        const skills = this.getCurrentSkills();
+
+        skills.push({ name: '', percentage: 0 });
+        skillsList.innerHTML = this.renderSkillsList(skills);
+
+        window.adminCore.showNotification('تم إضافة مهارة جديدة', 'success');
+    }
+
+    removeSkill(index) {
+        const skills = this.getCurrentSkills();
+        skills.splice(index, 1);
+
+        const skillsList = document.getElementById('skillsList');
+        skillsList.innerHTML = this.renderSkillsList(skills);
+
+        window.adminCore.showNotification('تم حذف المهارة', 'success');
+    }
+
+    getCurrentSkills() {
+        const skillItems = document.querySelectorAll('.skill-item');
+        const skills = [];
+
+        skillItems.forEach(item => {
+            const name = item.querySelector('.skill-name').value.trim();
+            const percentage = parseInt(item.querySelector('.skill-percentage').value) || 0;
+
+            if (name) {
+                skills.push({ name, percentage });
+            }
+        });
+
+        return skills;
+    }
+
+    saveSkills() {
+        const skills = this.getCurrentSkills();
+
+        if (skills.length === 0) {
+            window.adminCore.showNotification('يرجى إضافة مهارة واحدة على الأقل', 'warning');
+            return;
+        }
+
+        // Validate skills
+        for (let skill of skills) {
+            if (!skill.name.trim()) {
+                window.adminCore.showNotification('يرجى ملء جميع أسماء المهارات', 'error');
+                return;
+            }
+            if (skill.percentage < 0 || skill.percentage > 100) {
+                window.adminCore.showNotification('نسبة المهارة يجب أن تكون بين 0 و 100', 'error');
+                return;
+            }
+        }
+
+        // Save to AdminCore
+        window.adminCore.data.skills = skills;
+        window.adminCore.saveData();
+
+        // Update main website
+        this.updateMainWebsiteSkills(skills);
+
+        window.adminCore.showNotification('تم حفظ المهارات بنجاح', 'success');
+        window.adminCore.addActivity('تم تحديث المهارات التقنية', 'code');
+    }
+
+    updateMainWebsiteSkills(skills) {
+        // Create update script for main website
+        const updateScript = `
+            // Update skills on main website
+            const skillsContainer = document.querySelector('.skills-grid, .skills-container, #skills .grid');
+            if (skillsContainer) {
+                skillsContainer.innerHTML = '';
+                const skills = ${JSON.stringify(skills)};
+
+                skills.forEach(skill => {
+                    const skillElement = document.createElement('div');
+                    skillElement.className = 'skill-item';
+                    skillElement.innerHTML = \`
+                        <div class="skill-header">
+                            <span class="skill-name">\${skill.name}</span>
+                            <span class="skill-percentage">\${skill.percentage}%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-percentage="\${skill.percentage}" style="width: \${skill.percentage}%"></div>
+                        </div>
+                    \`;
+                    skillsContainer.appendChild(skillElement);
+                });
+
+                console.log('✅ Skills updated on main website');
+            }
+        `;
+
+        localStorage.setItem('skillsUpdate', updateScript);
+        localStorage.setItem('skillsData', JSON.stringify(skills));
+    }
+
+    resetSkills() {
+        if (confirm('هل أنت متأكد من إعادة تعيين جميع المهارات؟')) {
+            this.loadSkillsForm();
+            window.adminCore.showNotification('تم إعادة تعيين المهارات', 'info');
+        }
+    }
+
+    // ===== Portfolio Management =====
+    loadPortfolioForm() {
+        console.log('💼 Loading Portfolio Form...');
+        const portfolioSection = document.getElementById('portfolio-section');
+        if (!portfolioSection) {
+            console.error('❌ Portfolio section not found');
+            return;
+        }
+
+        const formContainer = portfolioSection.querySelector('.form-container');
+        if (!formContainer) {
+            console.error('❌ Portfolio form container not found');
+            return;
+        }
+
+        const portfolio = (window.adminCore && window.adminCore.data && window.adminCore.data.portfolio) || [];
+
+        formContainer.innerHTML = `
+            <div class="portfolio-manager">
+                <div class="portfolio-header">
+                    <button type="button" class="btn btn-primary" id="addProjectBtn">
+                        <i class="fas fa-plus"></i> إضافة مشروع جديد
+                    </button>
+                </div>
+
+                <div class="portfolio-list" id="portfolioList">
+                    ${this.renderPortfolioList(portfolio)}
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-success" id="savePortfolioBtn">
+                        <i class="fas fa-save"></i> حفظ المشاريع
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="resetPortfolioBtn">
+                        <i class="fas fa-undo"></i> إعادة تعيين
+                    </button>
+                </div>
+            </div>
+        `;
+
+        this.setupPortfolioHandlers();
+        console.log('✅ Portfolio form loaded successfully');
+    }
+
+    renderPortfolioList(portfolio) {
+        if (!portfolio || portfolio.length === 0) {
+            return '<p class="no-projects">لا توجد مشاريع مضافة بعد. اضغط على "إضافة مشروع جديد" للبدء.</p>';
+        }
+
+        return portfolio.map((project, index) => `
+            <div class="project-item" data-index="${index}">
+                <div class="project-header">
+                    <h4>مشروع ${index + 1}</h4>
+                    <button type="button" class="btn btn-danger btn-sm remove-project" data-index="${index}">
+                        <i class="fas fa-trash"></i> حذف
+                    </button>
+                </div>
+                <div class="project-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>عنوان المشروع</label>
+                            <input type="text" class="project-title" value="${project.title || ''}" placeholder="عنوان المشروع">
+                        </div>
+                        <div class="form-group">
+                            <label>رابط المشروع</label>
+                            <input type="url" class="project-demo" value="${project.demo || ''}" placeholder="https://example.com">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>وصف المشروع</label>
+                        <textarea class="project-description" rows="3" placeholder="وصف مختصر للمشروع">${project.description || ''}</textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>رابط الكود المصدري</label>
+                            <input type="url" class="project-code" value="${project.code || ''}" placeholder="https://github.com/username/project">
+                        </div>
+                        <div class="form-group">
+                            <label>صورة المشروع</label>
+                            <input type="url" class="project-image" value="${project.image || ''}" placeholder="رابط صورة المشروع">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>التقنيات المستخدمة (مفصولة بفاصلة)</label>
+                        <input type="text" class="project-technologies" value="${(project.technologies || []).join(', ')}" placeholder="HTML, CSS, JavaScript">
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    setupPortfolioHandlers() {
+        const addProjectBtn = document.getElementById('addProjectBtn');
+        const savePortfolioBtn = document.getElementById('savePortfolioBtn');
+        const resetPortfolioBtn = document.getElementById('resetPortfolioBtn');
+
+        if (addProjectBtn) {
+            addProjectBtn.addEventListener('click', () => this.addNewProject());
+        }
+
+        if (savePortfolioBtn) {
+            savePortfolioBtn.addEventListener('click', () => this.savePortfolio());
+        }
+
+        if (resetPortfolioBtn) {
+            resetPortfolioBtn.addEventListener('click', () => this.resetPortfolio());
+        }
+
+        // Setup remove project handlers
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.remove-project')) {
+                const index = e.target.closest('.remove-project').dataset.index;
+                this.removeProject(index);
+            }
+        });
+    }
+
+    addNewProject() {
+        const portfolioList = document.getElementById('portfolioList');
+        const portfolio = this.getCurrentPortfolio();
+
+        portfolio.push({
+            title: '',
+            description: '',
+            demo: '',
+            code: '',
+            image: '',
+            technologies: []
+        });
+
+        portfolioList.innerHTML = this.renderPortfolioList(portfolio);
+        window.adminCore.showNotification('تم إضافة مشروع جديد', 'success');
+    }
+
+    removeProject(index) {
+        const portfolio = this.getCurrentPortfolio();
+        portfolio.splice(index, 1);
+
+        const portfolioList = document.getElementById('portfolioList');
+        portfolioList.innerHTML = this.renderPortfolioList(portfolio);
+
+        window.adminCore.showNotification('تم حذف المشروع', 'success');
+    }
+
+    getCurrentPortfolio() {
+        const projectItems = document.querySelectorAll('.project-item');
+        const portfolio = [];
+
+        projectItems.forEach(item => {
+            const title = item.querySelector('.project-title').value.trim();
+            const description = item.querySelector('.project-description').value.trim();
+            const demo = item.querySelector('.project-demo').value.trim();
+            const code = item.querySelector('.project-code').value.trim();
+            const image = item.querySelector('.project-image').value.trim();
+            const technologies = item.querySelector('.project-technologies').value
+                .split(',')
+                .map(tech => tech.trim())
+                .filter(tech => tech);
+
+            if (title) {
+                portfolio.push({
+                    title,
+                    description,
+                    demo,
+                    code,
+                    image,
+                    technologies
+                });
+            }
+        });
+
+        return portfolio;
+    }
+
+    savePortfolio() {
+        const portfolio = this.getCurrentPortfolio();
+
+        if (portfolio.length === 0) {
+            window.adminCore.showNotification('يرجى إضافة مشروع واحد على الأقل', 'warning');
+            return;
+        }
+
+        // Validate projects
+        for (let project of portfolio) {
+            if (!project.title.trim()) {
+                window.adminCore.showNotification('يرجى ملء عناوين جميع المشاريع', 'error');
+                return;
+            }
+        }
+
+        // Save to AdminCore
+        window.adminCore.data.portfolio = portfolio;
+        window.adminCore.saveData();
+
+        // Update main website
+        this.updateMainWebsitePortfolio(portfolio);
+
+        window.adminCore.showNotification('تم حفظ المشاريع بنجاح', 'success');
+        window.adminCore.addActivity('تم تحديث معرض الأعمال', 'briefcase');
+    }
+
+    updateMainWebsitePortfolio(portfolio) {
+        // Create update script for main website
+        const updateScript = `
+            // Update portfolio on main website
+            const portfolioContainer = document.querySelector('.portfolio-grid, .portfolio-container, #portfolio .grid');
+            if (portfolioContainer) {
+                portfolioContainer.innerHTML = '';
+                const portfolio = ${JSON.stringify(portfolio)};
+
+                portfolio.forEach(project => {
+                    const projectElement = document.createElement('div');
+                    projectElement.className = 'portfolio-item';
+                    projectElement.innerHTML = \`
+                        <div class="portfolio-image">
+                            <img src="\${project.image || 'https://via.placeholder.com/300x200'}" alt="\${project.title}">
+                        </div>
+                        <div class="portfolio-content">
+                            <h3>\${project.title}</h3>
+                            <p>\${project.description}</p>
+                            <div class="portfolio-technologies">
+                                \${project.technologies.map(tech => \`<span class="tech-tag">\${tech}</span>\`).join('')}
+                            </div>
+                            <div class="portfolio-links">
+                                \${project.demo ? \`<a href="\${project.demo}" target="_blank" class="btn btn-primary">عرض المشروع</a>\` : ''}
+                                \${project.code ? \`<a href="\${project.code}" target="_blank" class="btn btn-secondary">الكود المصدري</a>\` : ''}
+                            </div>
+                        </div>
+                    \`;
+                    portfolioContainer.appendChild(projectElement);
+                });
+
+                console.log('✅ Portfolio updated on main website');
+            }
+        `;
+
+        localStorage.setItem('portfolioUpdate', updateScript);
+        localStorage.setItem('portfolioData', JSON.stringify(portfolio));
+    }
+
+    resetPortfolio() {
+        if (confirm('هل أنت متأكد من إعادة تعيين جميع المشاريع؟')) {
+            this.loadPortfolioForm();
+            window.adminCore.showNotification('تم إعادة تعيين المشاريع', 'info');
+        }
+    }
+
+    // ===== Blog Management =====
+    loadBlogForm() {
+        console.log('📝 Loading Blog Form...');
+        const blogSection = document.getElementById('blog-section');
+        if (!blogSection) {
+            console.error('❌ Blog section not found');
+            return;
+        }
+
+        const formContainer = blogSection.querySelector('.form-container');
+        if (!formContainer) {
+            console.error('❌ Blog form container not found');
+            return;
+        }
+
+        formContainer.innerHTML = `
+            <div class="blog-manager">
+                <div class="blog-header">
+                    <h3>إدارة المدونة</h3>
+                    <p>قريباً - نظام إدارة المقالات والمحتوى</p>
+                </div>
+
+                <div class="coming-soon">
+                    <i class="fas fa-blog fa-3x"></i>
+                    <h4>قيد التطوير</h4>
+                    <p>نعمل على تطوير نظام إدارة المدونة ليكون جاهزاً قريباً</p>
+
+                    <div class="features-preview">
+                        <h5>المميزات القادمة:</h5>
+                        <ul>
+                            <li><i class="fas fa-check"></i> محرر نصوص متقدم</li>
+                            <li><i class="fas fa-check"></i> إدارة الصور والوسائط</li>
+                            <li><i class="fas fa-check"></i> تصنيف المقالات</li>
+                            <li><i class="fas fa-check"></i> جدولة النشر</li>
+                            <li><i class="fas fa-check"></i> تحسين SEO للمقالات</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        console.log('✅ Blog form loaded successfully (placeholder)');
+    }
+
+    // ===== Settings Management =====
+    loadSettingsForm() {
+        console.log('⚙️ Loading Settings Form...');
+        const settingsSection = document.getElementById('settings-section');
+        if (!settingsSection) {
+            console.error('❌ Settings section not found');
+            return;
+        }
+
+        const formContainer = settingsSection.querySelector('.form-container');
+        if (!formContainer) {
+            console.error('❌ Settings form container not found');
+            return;
+        }
+
+        const settings = (window.adminCore && window.adminCore.data && window.adminCore.data.settings) || {};
+
+        formContainer.innerHTML = `
+            <form id="settingsForm" class="admin-form">
+                <div class="settings-section">
+                    <h3>إعدادات الموقع العامة</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="siteTitle">عنوان الموقع</label>
+                            <input type="text" id="siteTitle" name="siteTitle" value="${settings.siteTitle || 'الجبرني ويب'}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="siteDescription">وصف الموقع</label>
+                            <input type="text" id="siteDescription" name="siteDescription" value="${settings.siteDescription || 'مطور ويب ومصمم واجهات محترف'}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="siteKeywords">الكلمات المفتاحية (مفصولة بفاصلة)</label>
+                        <input type="text" id="siteKeywords" name="siteKeywords" value="${settings.siteKeywords || 'تطوير مواقع, تصميم واجهات, برمجة'}" required>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>إعدادات الألوان والثيم</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="primaryColor">اللون الأساسي</label>
+                            <input type="color" id="primaryColor" name="primaryColor" value="${settings.primaryColor || '#667eea'}">
+                        </div>
+                        <div class="form-group">
+                            <label for="secondaryColor">اللون الثانوي</label>
+                            <input type="color" id="secondaryColor" name="secondaryColor" value="${settings.secondaryColor || '#764ba2'}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>إعدادات الأمان</h3>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="enableSSL" name="enableSSL" ${settings.enableSSL ? 'checked' : ''}>
+                            تفعيل SSL (HTTPS)
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="enableCSP" name="enableCSP" ${settings.enableCSP !== false ? 'checked' : ''}>
+                            تفعيل Content Security Policy
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>إعدادات الأداء</h3>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="enableLazyLoading" name="enableLazyLoading" ${settings.enableLazyLoading !== false ? 'checked' : ''}>
+                            تفعيل التحميل التدريجي للصور
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="enableMinification" name="enableMinification" ${settings.enableMinification ? 'checked' : ''}>
+                            تفعيل ضغط الملفات
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> حفظ الإعدادات
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="resetSettingsBtn">
+                        <i class="fas fa-undo"></i> إعادة تعيين
+                    </button>
+                    <button type="button" class="btn btn-warning" id="exportSettingsBtn">
+                        <i class="fas fa-download"></i> تصدير الإعدادات
+                    </button>
+                </div>
+            </form>
+        `;
+
+        this.setupSettingsHandlers();
+        console.log('✅ Settings form loaded successfully');
+    }
+
+    setupSettingsHandlers() {
+        const settingsForm = document.getElementById('settingsForm');
+        const resetSettingsBtn = document.getElementById('resetSettingsBtn');
+        const exportSettingsBtn = document.getElementById('exportSettingsBtn');
+
+        if (settingsForm) {
+            settingsForm.addEventListener('submit', (e) => this.saveSettings(e));
+        }
+
+        if (resetSettingsBtn) {
+            resetSettingsBtn.addEventListener('click', () => this.resetSettings());
+        }
+
+        if (exportSettingsBtn) {
+            exportSettingsBtn.addEventListener('click', () => this.exportSettings());
+        }
+
+        // Color preview handlers
+        const colorInputs = document.querySelectorAll('input[type="color"]');
+        colorInputs.forEach(input => {
+            input.addEventListener('change', (e) => this.previewColorChange(e));
+        });
+    }
+
+    saveSettings(e) {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const settings = {};
+
+        // Get all form values
+        for (let [key, value] of formData.entries()) {
+            if (e.target.elements[key].type === 'checkbox') {
+                settings[key] = e.target.elements[key].checked;
+            } else {
+                settings[key] = value;
+            }
+        }
+
+        // Save to AdminCore
+        window.adminCore.data.settings = settings;
+        window.adminCore.saveData();
+
+        // Apply settings to main website
+        this.applySettingsToMainWebsite(settings);
+
+        window.adminCore.showNotification('تم حفظ الإعدادات بنجاح', 'success');
+        window.adminCore.addActivity('تم تحديث إعدادات الموقع', 'cog');
+    }
+
+    applySettingsToMainWebsite(settings) {
+        // Create update script for main website
+        const updateScript = `
+            // Apply settings to main website
+            const settings = ${JSON.stringify(settings)};
+
+            // Update title and meta tags
+            if (settings.siteTitle) {
+                document.title = settings.siteTitle;
+            }
+
+            if (settings.siteDescription) {
+                const metaDesc = document.querySelector('meta[name="description"]');
+                if (metaDesc) metaDesc.content = settings.siteDescription;
+            }
+
+            if (settings.siteKeywords) {
+                const metaKeywords = document.querySelector('meta[name="keywords"]');
+                if (metaKeywords) metaKeywords.content = settings.siteKeywords;
+            }
+
+            // Update colors
+            if (settings.primaryColor) {
+                document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
+            }
+
+            if (settings.secondaryColor) {
+                document.documentElement.style.setProperty('--secondary-color', settings.secondaryColor);
+            }
+
+            console.log('✅ Settings applied to main website');
+        `;
+
+        localStorage.setItem('settingsUpdate', updateScript);
+        localStorage.setItem('siteSettings', JSON.stringify(settings));
+    }
+
+    previewColorChange(e) {
+        const property = e.target.name === 'primaryColor' ? '--primary-color' : '--secondary-color';
+        document.documentElement.style.setProperty(property, e.target.value);
+    }
+
+    resetSettings() {
+        if (confirm('هل أنت متأكد من إعادة تعيين جميع الإعدادات؟')) {
+            this.loadSettingsForm();
+            window.adminCore.showNotification('تم إعادة تعيين الإعدادات', 'info');
+        }
+    }
+
+    exportSettings() {
+        const settings = window.adminCore.data.settings || {};
+        const dataStr = JSON.stringify(settings, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = 'website-settings.json';
+        link.click();
+
+        window.adminCore.showNotification('تم تصدير الإعدادات', 'success');
+    }
+
+    // ===== Navigation Management =====
+    setupNavigationHandlers() {
+        console.log('🧭 Setting up navigation handlers...');
+
+        // Sidebar navigation
+        const navLinks = document.querySelectorAll('.nav-link[data-section]');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = link.getAttribute('data-section');
+                this.showSection(sectionId);
+
+                // Update active nav item
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                link.closest('.nav-item').classList.add('active');
+            });
+        });
+
+        // Sidebar toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('collapsed');
+            });
+        }
+
+        console.log('✅ Navigation handlers set up successfully');
+    }
+
+    showSection(sectionId) {
+        console.log(`📄 Showing section: ${sectionId}`);
+
+        // Hide all sections
+        const sections = document.querySelectorAll('.content-section');
+        sections.forEach(section => {
+            section.classList.remove('active');
+        });
+
+        // Show target section
+        const targetSection = document.getElementById(`${sectionId}-section`);
+        if (targetSection) {
+            targetSection.classList.add('active');
+
+            // Load section content if needed
+            switch(sectionId) {
+                case 'personal-info':
+                    this.loadPersonalInfoForm();
+                    break;
+                case 'skills':
+                    this.loadSkillsForm();
+                    break;
+                case 'portfolio':
+                    this.loadPortfolioForm();
+                    break;
+                case 'blog':
+                    this.loadBlogForm();
+                    break;
+                case 'settings':
+                    this.loadSettingsForm();
+                    break;
+                default:
+                    // Dashboard section is already loaded
+                    break;
+            }
+        } else {
+            console.error(`❌ Section not found: ${sectionId}-section`);
+        }
     }
 
     savePersonalInfo(e) {
@@ -1646,7 +2456,19 @@ class DashboardManager {
     }
 }
 
-// Initialize dashboard manager
+// Initialize dashboard manager after AdminCore is ready
 document.addEventListener('DOMContentLoaded', () => {
-    window.dashboardManager = new DashboardManager();
+    // Wait for AdminCore to be initialized
+    const initDashboard = () => {
+        if (window.adminCore && window.adminCore.data) {
+            window.dashboardManager = new DashboardManager();
+            console.log('✅ Dashboard Manager initialized successfully');
+        } else {
+            // Retry after 100ms if AdminCore is not ready
+            setTimeout(initDashboard, 100);
+        }
+    };
+
+    // Start initialization
+    initDashboard();
 });

@@ -105,6 +105,56 @@
             padding-left: 45px;
         }
 
+        /* Remember Me Checkbox Styles */
+        .remember-me {
+            margin: 1rem 0;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #666;
+            user-select: none;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkmark {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            margin-left: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .checkbox-container:hover .checkmark {
+            border-color: #667eea;
+        }
+
+        .checkbox-container input[type="checkbox"]:checked + .checkmark {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
+        }
+
+        .checkbox-container input[type="checkbox"]:checked + .checkmark::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 2px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
         .password-toggle {
             position: absolute;
             left: 15px;
@@ -262,7 +312,15 @@
                 <input type="password" id="password" name="password" required autocomplete="current-password">
                 <i class="fas fa-eye password-toggle" id="passwordToggle"></i>
             </div>
-            
+
+            <div class="form-group remember-me">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="rememberMe" name="rememberMe">
+                    <span class="checkmark"></span>
+                    تذكرني لمدة 30 يوماً
+                </label>
+            </div>
+
             <button type="submit" class="login-btn" id="loginBtn">
                 <i class="fas fa-sign-in-alt"></i>
                 تسجيل الدخول
@@ -326,11 +384,23 @@
 
             async handleLogin(e) {
                 e.preventDefault();
-                
+
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
+                const rememberMe = document.getElementById('rememberMe').checked;
                 const loginBtn = document.getElementById('loginBtn');
                 const loading = document.getElementById('loading');
+
+                // Validation
+                if (!username.trim()) {
+                    this.showMessage('يرجى إدخال اسم المستخدم', 'error');
+                    return;
+                }
+
+                if (!password.trim()) {
+                    this.showMessage('يرجى إدخال كلمة المرور', 'error');
+                    return;
+                }
 
                 // Show loading
                 loginBtn.disabled = true;
@@ -341,25 +411,39 @@
 
                 if (this.validateCredentials(username, password)) {
                     this.showMessage('تم تسجيل الدخول بنجاح!', 'success');
-                    
-                    // Set session
+
+                    // Set session with remember me option
                     const sessionData = {
                         username: username,
                         loginTime: Date.now(),
-                        sessionId: this.generateSessionId()
+                        sessionId: this.generateSessionId(),
+                        rememberMe: rememberMe,
+                        expiryTime: rememberMe ?
+                            Date.now() + (30 * 24 * 60 * 60 * 1000) : // 30 days
+                            Date.now() + (24 * 60 * 60 * 1000) // 24 hours
                     };
-                    
+
                     localStorage.setItem('adminSession', JSON.stringify(sessionData));
-                    
+
+                    // Log successful login
+                    console.log('✅ تسجيل دخول ناجح:', {
+                        username: username,
+                        rememberMe: rememberMe,
+                        sessionDuration: rememberMe ? '30 يوم' : '24 ساعة'
+                    });
+
                     // Redirect after short delay
                     setTimeout(() => {
                         this.redirectToDashboard();
                     }, 1000);
                 } else {
                     this.showMessage('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
-                    
+
                     // Security: Add failed attempt
                     this.addFailedAttempt();
+
+                    // Clear password field for security
+                    document.getElementById('password').value = '';
                 }
 
                 // Hide loading
@@ -393,17 +477,43 @@
                 const session = localStorage.getItem('adminSession');
                 if (!session) return false;
 
-                const sessionData = JSON.parse(session);
-                const currentTime = Date.now();
-                const sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
+                try {
+                    const sessionData = JSON.parse(session);
+                    const currentTime = Date.now();
 
-                // Check if session is still valid
-                if (currentTime - sessionData.loginTime > sessionDuration) {
+                    // Check if session has expiry time (new format)
+                    if (sessionData.expiryTime) {
+                        if (currentTime > sessionData.expiryTime) {
+                            localStorage.removeItem('adminSession');
+                            console.log('🔒 انتهت صلاحية الجلسة');
+                            return false;
+                        }
+                    } else {
+                        // Legacy format - 24 hours default
+                        const sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
+                        if (currentTime - sessionData.loginTime > sessionDuration) {
+                            localStorage.removeItem('adminSession');
+                            console.log('🔒 انتهت صلاحية الجلسة (تنسيق قديم)');
+                            return false;
+                        }
+                    }
+
+                    // Log session info
+                    const remainingTime = sessionData.expiryTime ?
+                        Math.max(0, sessionData.expiryTime - currentTime) :
+                        Math.max(0, (sessionData.loginTime + 24 * 60 * 60 * 1000) - currentTime);
+
+                    const remainingHours = Math.floor(remainingTime / (60 * 60 * 1000));
+                    const remainingMinutes = Math.floor((remainingTime % (60 * 60 * 1000)) / (60 * 1000));
+
+                    console.log(`✅ الجلسة نشطة - الوقت المتبقي: ${remainingHours}ساعة ${remainingMinutes}دقيقة`);
+
+                    return true;
+                } catch (error) {
+                    console.error('❌ خطأ في قراءة بيانات الجلسة:', error);
                     localStorage.removeItem('adminSession');
                     return false;
                 }
-
-                return true;
             }
 
             addFailedAttempt() {
@@ -483,6 +593,45 @@
 
             redirectToDashboard() {
                 window.location.href = 'dashboard.html';
+            }
+
+            // Enhanced logout function
+            logout() {
+                const session = localStorage.getItem('adminSession');
+                if (session) {
+                    const sessionData = JSON.parse(session);
+                    console.log(`🔓 تسجيل خروج للمستخدم: ${sessionData.username}`);
+                }
+
+                // Clear all admin-related data
+                localStorage.removeItem('adminSession');
+                localStorage.removeItem('adminData');
+                localStorage.removeItem('failedAttempts');
+
+                // Clear any temporary data
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (key.startsWith('admin') || key.startsWith('temp'))) {
+                        keysToRemove.push(key);
+                    }
+                }
+                keysToRemove.forEach(key => localStorage.removeItem(key));
+
+                console.log('✅ تم تسجيل الخروج وتنظيف البيانات');
+
+                // Redirect to login page
+                window.location.href = 'login.html';
+            }
+
+            // Check session validity periodically
+            startSessionMonitoring() {
+                setInterval(() => {
+                    if (!this.isLoggedIn()) {
+                        console.log('🔒 انتهت صلاحية الجلسة - إعادة توجيه لتسجيل الدخول');
+                        this.logout();
+                    }
+                }, 60000); // Check every minute
             }
         }
 

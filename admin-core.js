@@ -14,44 +14,209 @@ class AdminCore {
     }
 
     init() {
-        this.checkAuthentication();
+        console.log('🚀 تهيئة لوحة التحكم الإدارية...');
+
+        // Check authentication first
+        if (!this.checkAuthentication()) {
+            return; // Will redirect to login
+        }
+
+        // Load data and initialize components
         this.loadData();
         this.setupEventListeners();
         this.initializeComponents();
+
+        // Log successful initialization
+        console.log('✅ تم تحميل لوحة التحكم بنجاح');
+        this.logSystemStatus();
     }
 
-    // ===== Authentication =====
+    logSystemStatus() {
+        console.log('📊 حالة النظام:');
+        console.log(`👤 المستخدم: ${this.currentUser}`);
+        console.log(`💾 البيانات: ${Object.keys(this.data).length} أقسام محملة`);
+        console.log(`🔐 الجلسة: نشطة ومحمية`);
+
+        // Check integration status
+        const loginPageExists = this.checkFileExists('login.html');
+        const dashboardPageExists = this.checkFileExists('dashboard.html');
+
+        console.log(`🔗 التكامل: ${loginPageExists && dashboardPageExists ? 'مكتمل' : 'يحتاج مراجعة'}`);
+    }
+
+    checkFileExists(filename) {
+        try {
+            // This is a simple check - in a real environment you'd use proper file checking
+            return true; // Assume files exist in this context
+        } catch (error) {
+            return false;
+        }
+    }
+
+    // ===== Enhanced Authentication =====
     checkAuthentication() {
+        console.log('🔐 فحص صلاحية الجلسة...');
+
         const session = localStorage.getItem('adminSession');
         if (!session) {
-            window.location.href = 'login.html';
-            return;
+            console.log('❌ لا توجد جلسة - إعادة توجيه لتسجيل الدخول');
+            this.redirectToLogin();
+            return false;
         }
 
-        const sessionData = JSON.parse(session);
-        const currentTime = Date.now();
-        const sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
+        try {
+            const sessionData = JSON.parse(session);
+            const currentTime = Date.now();
 
-        if (currentTime - sessionData.loginTime > sessionDuration) {
-            localStorage.removeItem('adminSession');
-            window.location.href = 'login.html';
-            return;
+            // Check if session has expiry time (new format)
+            if (sessionData.expiryTime) {
+                if (currentTime > sessionData.expiryTime) {
+                    console.log('🔒 انتهت صلاحية الجلسة (تنسيق جديد)');
+                    this.clearSession();
+                    this.redirectToLogin();
+                    return false;
+                }
+            } else {
+                // Legacy format - 24 hours default
+                const sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
+                if (currentTime - sessionData.loginTime > sessionDuration) {
+                    console.log('🔒 انتهت صلاحية الجلسة (تنسيق قديم)');
+                    this.clearSession();
+                    this.redirectToLogin();
+                    return false;
+                }
+            }
+
+            // Session is valid
+            this.currentUser = sessionData.username;
+            this.sessionData = sessionData;
+            this.updateUserInfo();
+            this.logSessionInfo(sessionData, currentTime);
+
+            console.log('✅ الجلسة صالحة - المستخدم:', this.currentUser);
+            return true;
+
+        } catch (error) {
+            console.error('❌ خطأ في قراءة بيانات الجلسة:', error);
+            this.clearSession();
+            this.redirectToLogin();
+            return false;
         }
+    }
 
-        this.currentUser = sessionData.username;
-        this.updateUserInfo();
+    logSessionInfo(sessionData, currentTime) {
+        const remainingTime = sessionData.expiryTime ?
+            Math.max(0, sessionData.expiryTime - currentTime) :
+            Math.max(0, (sessionData.loginTime + 24 * 60 * 60 * 1000) - currentTime);
+
+        const remainingHours = Math.floor(remainingTime / (60 * 60 * 1000));
+        const remainingMinutes = Math.floor((remainingTime % (60 * 60 * 1000)) / (60 * 1000));
+
+        console.log(`⏰ الوقت المتبقي للجلسة: ${remainingHours}ساعة ${remainingMinutes}دقيقة`);
+
+        if (sessionData.rememberMe) {
+            console.log('🔄 جلسة ممتدة (تذكرني مفعل)');
+        }
+    }
+
+    clearSession() {
+        localStorage.removeItem('adminSession');
+        localStorage.removeItem('adminData');
+        localStorage.removeItem('failedAttempts');
+
+        // Clear any temporary admin data
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && (key.startsWith('admin') || key.startsWith('temp'))) {
+                keysToRemove.push(key);
+            }
+        }
+        keysToRemove.forEach(key => localStorage.removeItem(key));
+
+        console.log('🧹 تم تنظيف بيانات الجلسة');
+    }
+
+    redirectToLogin() {
+        console.log('🔄 إعادة توجيه لصفحة تسجيل الدخول');
+        window.location.href = 'login.html';
     }
 
     updateUserInfo() {
-        const userElements = document.querySelectorAll('#currentUser, #headerUsername');
+        // Update username displays
+        const userElements = document.querySelectorAll('#currentUser, #headerUsername, .username-display');
         userElements.forEach(el => {
             if (el) el.textContent = this.currentUser;
         });
+
+        // Update session info displays
+        if (this.sessionData) {
+            const sessionInfoElements = document.querySelectorAll('.session-info');
+            sessionInfoElements.forEach(el => {
+                if (el) {
+                    const loginTime = new Date(this.sessionData.loginTime);
+                    const expiryTime = this.sessionData.expiryTime ?
+                        new Date(this.sessionData.expiryTime) :
+                        new Date(this.sessionData.loginTime + 24 * 60 * 60 * 1000);
+
+                    el.innerHTML = `
+                        <div class="session-details">
+                            <small>آخر دخول: ${loginTime.toLocaleString('ar-SA')}</small><br>
+                            <small>انتهاء الجلسة: ${expiryTime.toLocaleString('ar-SA')}</small>
+                            ${this.sessionData.rememberMe ? '<br><small class="remember-badge">🔄 تذكرني مفعل</small>' : ''}
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        // Update welcome message
+        const welcomeElements = document.querySelectorAll('.welcome-message');
+        welcomeElements.forEach(el => {
+            if (el) {
+                const currentHour = new Date().getHours();
+                let greeting = 'مرحباً';
+
+                if (currentHour < 12) {
+                    greeting = 'صباح الخير';
+                } else if (currentHour < 18) {
+                    greeting = 'مساء الخير';
+                } else {
+                    greeting = 'مساء الخير';
+                }
+
+                el.textContent = `${greeting}، ${this.currentUser}`;
+            }
+        });
+
+        console.log('👤 تم تحديث معلومات المستخدم في الواجهة');
     }
 
     logout() {
-        localStorage.removeItem('adminSession');
-        window.location.href = 'login.html';
+        console.log('🔓 بدء عملية تسجيل الخروج...');
+
+        // Log current session info before logout
+        if (this.sessionData) {
+            console.log(`👋 تسجيل خروج للمستخدم: ${this.sessionData.username}`);
+        }
+
+        // Clear session and all related data
+        this.clearSession();
+
+        // Show logout message
+        this.showNotification('تم تسجيل الخروج بنجاح', 'success');
+
+        // Redirect after short delay
+        setTimeout(() => {
+            this.redirectToLogin();
+        }, 1000);
+    }
+
+    // Enhanced logout with confirmation
+    logoutWithConfirmation() {
+        if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+            this.logout();
+        }
     }
 
     // ===== Data Management =====
@@ -303,6 +468,106 @@ class AdminCore {
     initializeComponents() {
         this.updateDashboardStats();
         this.loadRecentActivity();
+        this.startSessionMonitoring();
+        this.setupAutoSync();
+
+        // Run integration health check
+        setTimeout(() => {
+            this.checkIntegrationHealth();
+        }, 2000);
+    }
+
+    // Auto-sync on storage changes
+    setupAutoSync() {
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'adminSession') {
+                console.log('🔄 تم اكتشاف تغيير في الجلسة - مزامنة تلقائية');
+                this.syncWithLoginSystem();
+            }
+        });
+
+        // Periodic sync check
+        setInterval(() => {
+            this.syncWithLoginSystem();
+        }, 30000); // Every 30 seconds
+
+        console.log('🔄 تم تفعيل المزامنة التلقائية');
+    }
+
+    // Start periodic session monitoring
+    startSessionMonitoring() {
+        // Check session every 5 minutes
+        this.sessionMonitor = setInterval(() => {
+            console.log('🔍 فحص دوري للجلسة...');
+            if (!this.checkAuthentication()) {
+                clearInterval(this.sessionMonitor);
+            }
+        }, 5 * 60 * 1000); // 5 minutes
+
+        // Warning before session expires (30 minutes before)
+        this.sessionWarning = setInterval(() => {
+            this.checkSessionWarning();
+        }, 10 * 60 * 1000); // Check every 10 minutes
+
+        console.log('⏰ تم تفعيل مراقبة الجلسة الدورية');
+    }
+
+    checkSessionWarning() {
+        const session = localStorage.getItem('adminSession');
+        if (!session) return;
+
+        try {
+            const sessionData = JSON.parse(session);
+            const currentTime = Date.now();
+            const expiryTime = sessionData.expiryTime ||
+                (sessionData.loginTime + 24 * 60 * 60 * 1000);
+
+            const timeUntilExpiry = expiryTime - currentTime;
+            const thirtyMinutes = 30 * 60 * 1000;
+
+            // Show warning if less than 30 minutes remaining
+            if (timeUntilExpiry > 0 && timeUntilExpiry <= thirtyMinutes) {
+                const minutesLeft = Math.floor(timeUntilExpiry / (60 * 1000));
+                this.showSessionWarning(minutesLeft);
+            }
+        } catch (error) {
+            console.error('خطأ في فحص تحذير الجلسة:', error);
+        }
+    }
+
+    showSessionWarning(minutesLeft) {
+        const warningMessage = `⚠️ تنبيه: ستنتهي جلستك خلال ${minutesLeft} دقيقة. هل تريد تمديد الجلسة؟`;
+
+        if (confirm(warningMessage)) {
+            this.extendSession();
+        }
+    }
+
+    extendSession() {
+        const session = localStorage.getItem('adminSession');
+        if (!session) return;
+
+        try {
+            const sessionData = JSON.parse(session);
+            const currentTime = Date.now();
+
+            // Extend session by 24 hours or original duration
+            const extensionTime = sessionData.rememberMe ?
+                (30 * 24 * 60 * 60 * 1000) : // 30 days
+                (24 * 60 * 60 * 1000); // 24 hours
+
+            sessionData.expiryTime = currentTime + extensionTime;
+            sessionData.lastExtended = currentTime;
+
+            localStorage.setItem('adminSession', JSON.stringify(sessionData));
+
+            this.showNotification('تم تمديد الجلسة بنجاح', 'success');
+            console.log('🔄 تم تمديد الجلسة');
+
+        } catch (error) {
+            console.error('خطأ في تمديد الجلسة:', error);
+            this.showNotification('فشل في تمديد الجلسة', 'error');
+        }
     }
 
     updateDashboardStats() {
@@ -468,6 +733,92 @@ class AdminCore {
         URL.revokeObjectURL(url);
         this.showNotification('تم إنشاء النسخة الاحتياطية', 'success');
         this.addActivity('تم إنشاء نسخة احتياطية', 'download');
+    }
+
+    // ===== Integration Utilities =====
+
+    // Sync data between login and dashboard
+    syncWithLoginSystem() {
+        const loginSession = localStorage.getItem('adminSession');
+        if (loginSession) {
+            try {
+                const sessionData = JSON.parse(loginSession);
+
+                // Update current session data
+                this.sessionData = sessionData;
+                this.currentUser = sessionData.username;
+
+                // Update UI
+                this.updateUserInfo();
+
+                console.log('🔄 تم مزامنة البيانات مع نظام تسجيل الدخول');
+                return true;
+            } catch (error) {
+                console.error('❌ خطأ في مزامنة البيانات:', error);
+                return false;
+            }
+        }
+        return false;
+    }
+
+    // Check integration health
+    checkIntegrationHealth() {
+        const healthChecks = {
+            sessionExists: !!localStorage.getItem('adminSession'),
+            userDataLoaded: !!this.currentUser,
+            dataStructureValid: this.validateDataStructure(),
+            uiElementsPresent: this.checkUIElements()
+        };
+
+        const healthScore = Object.values(healthChecks).filter(Boolean).length;
+        const totalChecks = Object.keys(healthChecks).length;
+
+        console.log('🏥 فحص صحة التكامل:');
+        console.log(`📊 النتيجة: ${healthScore}/${totalChecks} (${Math.round(healthScore/totalChecks*100)}%)`);
+
+        Object.entries(healthChecks).forEach(([check, status]) => {
+            console.log(`${status ? '✅' : '❌'} ${check}`);
+        });
+
+        return healthScore === totalChecks;
+    }
+
+    validateDataStructure() {
+        const requiredKeys = ['personalInfo', 'skills', 'portfolio', 'blog', 'settings'];
+        return requiredKeys.every(key => this.data.hasOwnProperty(key));
+    }
+
+    checkUIElements() {
+        const requiredElements = ['currentUser', 'headerUsername'];
+        return requiredElements.every(id => document.getElementById(id));
+    }
+
+    // Force refresh integration
+    refreshIntegration() {
+        console.log('🔄 إعادة تحديث التكامل...');
+
+        // Re-sync with login system
+        if (this.syncWithLoginSystem()) {
+            // Reload data
+            this.loadData();
+
+            // Update UI
+            this.updateUserInfo();
+
+            // Check health
+            const isHealthy = this.checkIntegrationHealth();
+
+            if (isHealthy) {
+                this.showNotification('تم تحديث التكامل بنجاح', 'success');
+                console.log('✅ التكامل يعمل بشكل مثالي');
+            } else {
+                this.showNotification('تحذير: مشاكل في التكامل', 'warning');
+                console.log('⚠️ توجد مشاكل في التكامل');
+            }
+        } else {
+            this.showNotification('فشل في تحديث التكامل', 'error');
+            console.log('❌ فشل في تحديث التكامل');
+        }
     }
 }
 

@@ -70,6 +70,9 @@
                 <div class="user-details">
                     <span class="username" id="currentUser">المدير</span>
                     <span class="user-role">مدير الموقع</span>
+                    <div class="session-info" style="font-size: 0.8rem; color: #666; margin-top: 4px;">
+                        <!-- Session info will be populated by JavaScript -->
+                    </div>
                 </div>
             </div>
             <button class="logout-btn" id="logoutBtn">
@@ -130,6 +133,15 @@
         <div class="content-area" id="contentArea">
             <!-- Dashboard Section -->
             <section class="content-section active" id="dashboard-section">
+                <!-- Welcome Message -->
+                <div class="welcome-card" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                    <h3 class="welcome-message" style="margin: 0 0 0.5rem 0; font-size: 1.5rem;">مرحباً، المدير</h3>
+                    <p style="margin: 0; opacity: 0.9;">أهلاً بك في لوحة التحكم الإدارية لموقع الجبرني ويب</p>
+                    <div class="session-status" style="margin-top: 1rem; padding: 0.5rem; background: rgba(255,255,255,0.1); border-radius: 8px; font-size: 0.9rem;">
+                        <i class="fas fa-shield-alt"></i> جلسة آمنة ونشطة
+                    </div>
+                </div>
+
                 <div class="dashboard-grid">
                     <div class="stats-card">
                         <div class="stats-icon">
